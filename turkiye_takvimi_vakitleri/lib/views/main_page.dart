@@ -1,9 +1,11 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_slider_drawer/flutter_slider_drawer.dart';
 import 'package:one_clock/one_clock.dart';
+import 'package:turkiye_takvimi_vakitleri/cubits/main_page_cubit.dart';
 
 class MainPage extends StatefulWidget {
   const MainPage({super.key});
@@ -143,7 +145,9 @@ class _MainPageState extends State<MainPage> {
       right: 0,
       top: 50.h,
       child: GestureDetector(
-        onTap: () {},
+        onTap: () {
+          context.read<MainPageCubit>().getLocation();
+        },
         child: Container(
           width: 160.w,
           height: 30.h,
@@ -221,13 +225,14 @@ class _MainPageState extends State<MainPage> {
     return Image.asset('images/divider.png', width: 300.w, color: themeColor);
   }
 
-  Widget text(String text, double spExample) {
+  Widget text(String text, double font) {
     final themeColor = Theme.of(context).colorScheme.primary;
     return Text(
       text,
+      overflow: TextOverflow.ellipsis,
       style: TextStyle(
         color: themeColor,
-        fontSize: spExample.sp,
+        fontSize: font.sp,
         fontWeight: FontWeight.bold,
       ),
     );

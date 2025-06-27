@@ -38,6 +38,8 @@ dependencies:
   flutter_screenutil: ^5.9.3
   flutter_slider_drawer: ^3.0.2
   one_clock: ^2.0.2
+  geolocator: ^14.0.1
+  flutter_bloc: ^9.1.1
 
 dev_dependencies:
   flutter_test:
