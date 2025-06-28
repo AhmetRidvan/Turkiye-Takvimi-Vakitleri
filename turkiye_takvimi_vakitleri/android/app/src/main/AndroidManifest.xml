@@ -3,7 +3,7 @@
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 
     <application
-        android:label="turkiye_takvimi_vakitleri"
+        android:label="Türkiye Takvimi Vakitleri"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity

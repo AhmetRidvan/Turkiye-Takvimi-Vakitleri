@@ -40,17 +40,38 @@ dependencies:
   one_clock: ^2.0.2
   geolocator: ^14.0.1
   flutter_bloc: ^9.1.1
+  shared_preferences: ^2.5.3
+  another_flutter_splash_screen: ^1.2.1
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  flutter_native_splash: ^2.4.6
+  flutter_lints: ^5.0.0
+  flutter_launcher_icons: "^0.14.4"
+
+flutter_icons:
+  android: true
+  ios: true
+  image_path: "images/splash.png"
+  adaptive_icon_background: "#360000" # veya bir resim yolu
+  adaptive_icon_foreground: "images/splash.png"
+
+flutter_native_splash:
+  color: "#360000"
+  image: images/splash.png
+
+  android_12:
+    image: images/splash.png
+    icon_background_color: "#360000"
+    color: "#360000"
 
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is
   # activated in the `analysis_options.yaml` file located at the root of your
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
-  flutter_lints: ^5.0.0
+  
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:turkiye_takvimi_vakitleri/cubits/main_page_cubit.dart';
 import 'package:turkiye_takvimi_vakitleri/views/main_page.dart';
+import 'package:another_flutter_splash_screen/another_flutter_splash_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -37,7 +38,20 @@ class MyApp extends StatelessWidget {
               ),
             ),
             debugShowCheckedModeBanner: false,
-            home: MainPage(),
+            home: FlutterSplashScreen.scale(
+              childWidget: SizedBox(
+                height: 100.h,
+                child: Image.asset('images/splash.png'),
+              ),
+              nextScreen: MainPage(),
+              gradient: LinearGradient(
+                begin: Alignment.bottomLeft,
+                end: Alignment.topRight,
+                colors: [Colors.lightBlueAccent, Colors.deepOrange, Colors.pinkAccent],
+              ),
+              duration: Duration(seconds: 1),
+              animationDuration: Duration(seconds: 1),
+            ),
           ),
         );
       },

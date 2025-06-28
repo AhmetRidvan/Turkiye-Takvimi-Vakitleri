@@ -4,7 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_slider_drawer/flutter_slider_drawer.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:one_clock/one_clock.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:turkiye_takvimi_vakitleri/cubits/main_page_cubit.dart';
 
 class MainPage extends StatefulWidget {
@@ -17,6 +19,8 @@ class MainPage extends StatefulWidget {
 class _MainPageState extends State<MainPage> {
   final GlobalKey<SliderDrawerState> _sliderDrawerKey =
       GlobalKey<SliderDrawerState>();
+  double? latitude;
+  double? longtitude;
   String _locationCityName = 'İstanbul';
   String _day = '30';
   String _day2 = 'Çarşamba';
@@ -27,6 +31,16 @@ class _MainPageState extends State<MainPage> {
   @override
   void initState() {
     super.initState();
+    context.read<MainPageCubit>().getLocation();
+    _loadLocationFromPrefs();
+  }
+
+  Future<void> _loadLocationFromPrefs() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+      latitude = prefs.getDouble('latitude') ?? 41.0048237;
+      longtitude = prefs.getDouble('longtitude') ?? 28.8157869;
+    });
   }
 
   @override
@@ -49,66 +63,80 @@ class _MainPageState extends State<MainPage> {
           child: Center(child: Text("asd")),
         ),
       ),
-      child: Scaffold(
-        body: Stack(
-          fit: StackFit.expand,
-          children: [
-            Image.asset('images/background.png', fit: BoxFit.fill),
-            customDrawerButton(),
-            customLocationDrawerButton(),
-            Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                SizedBox(height: 83.h),
-                customDivider(),
-                Text(
-                  _hicri,
-                  style: TextStyle(
-                    color: themeColor.primary,
-                    fontSize: 24.sp,
-                    fontWeight: FontWeight.bold,
-                    height: 0.8.h,
+      child: BlocListener<MainPageCubit, Position?>(
+        listener: (BuildContext context, Position? state) async {
+          if (state != null) {
+            setState(() {
+              latitude = state.latitude;
+              longtitude = state.longitude;
+            });
+            final SharedPreferences prefs =
+                await SharedPreferences.getInstance();
+            prefs.setDouble('latitude', state.latitude);
+            prefs.setDouble('longtitude', state.longitude);
+          }
+        },
+        child: Scaffold(
+          body: Stack(
+            fit: StackFit.expand,
+            children: [
+              Image.asset('images/background.png', fit: BoxFit.fill),
+              customDrawerButton(),
+              customLocationDrawerButton(),
+              Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  SizedBox(height: 83.h),
+                  customDivider(),
+                  Text(
+                    _hicri,
+                    style: TextStyle(
+                      color: themeColor.primary,
+                      fontSize: 24.sp,
+                      fontWeight: FontWeight.bold,
+                      height: 0.8.h,
+                    ),
                   ),
-                ),
-                Transform.rotate(angle: pi, child: customDivider()),
-                SizedBox(height: 2.0.h),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  crossAxisAlignment: CrossAxisAlignment.center,
+                  Transform.rotate(angle: pi, child: customDivider()),
+                  SizedBox(height: 2.0.h),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    crossAxisAlignment: CrossAxisAlignment.center,
 
-                  children: [
-                    analogClock(),
-                    Column(
-                      children: [
-                        Container(
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(15),
-                            color: themeColor.primary,
-                          ),
-                          child: Padding(
-                            padding: const EdgeInsets.all(3.0),
-                            child: Text(
-                              _day,
-                              style: TextStyle(
-                                color: themeColor.onPrimary,
-                                fontSize: 30.sp,
+                    children: [
+                      analogClock(),
+                      Column(
+                        children: [
+                          Container(
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(15),
+                              color: themeColor.primary,
+                            ),
+                            child: Padding(
+                              padding: const EdgeInsets.all(3.0),
+                              child: Text(
+                                _day,
+                                style: TextStyle(
+                                  color: themeColor.onPrimary,
+                                  fontSize: 30.sp,
+                                ),
                               ),
                             ),
                           ),
-                        ),
-                        text(_day2, 15),
+                          text(_day2, 15),
 
-                        text(_month, 15),
-                        text(_year, 15),
-                      ],
-                    ),
+                          text(_month, 15),
+                          text(_year, 15),
+                        ],
+                      ),
 
-                    analogClock(),
-                  ],
-                ),
-              ],
-            ),
-          ],
+                      analogClock(),
+                    ],
+                  ),
+                ],
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -135,7 +163,7 @@ class _MainPageState extends State<MainPage> {
           ),
           child: Icon(Icons.menu, color: themeColor.onPrimary),
         ),
-      ),
+      ), 
     );
   }
 
