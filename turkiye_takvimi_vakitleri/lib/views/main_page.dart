@@ -7,7 +7,9 @@ import 'package:flutter_slider_drawer/flutter_slider_drawer.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:one_clock/one_clock.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:turkiye_takvimi_vakitleri/cubits/main_page_cubit.dart';
+import 'package:turkiye_takvimi_vakitleri/cubits/id_cubit.dart';
+import 'package:turkiye_takvimi_vakitleri/cubits/location_cubit.dart';
+import 'package:turkiye_takvimi_vakitleri/models/id_model.dart';
 
 class MainPage extends StatefulWidget {
   const MainPage({super.key});
@@ -21,6 +23,7 @@ class _MainPageState extends State<MainPage> {
       GlobalKey<SliderDrawerState>();
   double? latitude;
   double? longtitude;
+  int? id;
   String _locationCityName = 'İstanbul';
   String _day = '30';
   String _day2 = 'Çarşamba';
@@ -31,16 +34,17 @@ class _MainPageState extends State<MainPage> {
   @override
   void initState() {
     super.initState();
-    context.read<MainPageCubit>().getLocation();
-    _loadLocationFromPrefs();
+    _getLocation();
   }
 
-  Future<void> _loadLocationFromPrefs() async {
+  Future<void> _getLocation() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
+    context.read<LocationCubit>().getLocation();
     setState(() {
       latitude = prefs.getDouble('latitude') ?? 41.0048237;
       longtitude = prefs.getDouble('longtitude') ?? 28.8157869;
     });
+    context.read<IdCubit>().getId(lat: latitude!, long: longtitude!);
   }
 
   @override
@@ -63,19 +67,33 @@ class _MainPageState extends State<MainPage> {
           child: Center(child: Text("asd")),
         ),
       ),
-      child: BlocListener<MainPageCubit, Position?>(
-        listener: (BuildContext context, Position? state) async {
-          if (state != null) {
-            setState(() {
-              latitude = state.latitude;
-              longtitude = state.longitude;
-            });
-            final SharedPreferences prefs =
-                await SharedPreferences.getInstance();
-            prefs.setDouble('latitude', state.latitude);
-            prefs.setDouble('longtitude', state.longitude);
-          }
-        },
+      child: MultiBlocListener(
+        listeners: [
+          BlocListener<LocationCubit, Position?>(
+            listener: (BuildContext context, Position? state) async {
+              if (state != null) {
+                setState(() {
+                  latitude = state.latitude;
+                  longtitude = state.longitude;
+                });
+                final SharedPreferences prefs =
+                    await SharedPreferences.getInstance();
+                await prefs.setDouble('latitude', state.latitude);
+                await prefs.setDouble('longtitude', state.longitude);
+              }
+            },
+          ),
+          BlocListener<IdCubit, IdModel?>(
+            listener: (BuildContext context, IdModel? state) async {
+              if (state != null) {
+                final c = state.sehir![0];
+                setState(() {
+                  _locationCityName = c.cityNameTR!;
+                });
+              }
+            },
+          ),
+        ],
         child: Scaffold(
           body: Stack(
             fit: StackFit.expand,
@@ -163,7 +181,7 @@ class _MainPageState extends State<MainPage> {
           ),
           child: Icon(Icons.menu, color: themeColor.onPrimary),
         ),
-      ), 
+      ),
     );
   }
 
@@ -174,7 +192,7 @@ class _MainPageState extends State<MainPage> {
       top: 50.h,
       child: GestureDetector(
         onTap: () {
-          context.read<MainPageCubit>().getLocation();
+          _getLocation();
         },
         child: Container(
           width: 160.w,
@@ -202,7 +220,7 @@ class _MainPageState extends State<MainPage> {
                     overflow: TextOverflow.ellipsis,
                     style: TextStyle(
                       color: themeColor.onPrimary,
-                      fontSize: 25.sp,
+                      fontSize: 22.sp,
                       fontWeight: FontWeight.bold,
                     ),
                   ),

@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:turkiye_takvimi_vakitleri/cubits/main_page_cubit.dart';
+import 'package:turkiye_takvimi_vakitleri/cubits/id_cubit.dart';
+import 'package:turkiye_takvimi_vakitleri/cubits/location_cubit.dart';
 import 'package:turkiye_takvimi_vakitleri/views/main_page.dart';
 import 'package:another_flutter_splash_screen/another_flutter_splash_screen.dart';
 
@@ -27,7 +28,12 @@ class MyApp extends StatelessWidget {
           providers: [
             BlocProvider(
               create: (context) {
-                return MainPageCubit();
+                return LocationCubit();
+              },
+            ),
+            BlocProvider(
+              create: (context) {
+                return IdCubit();
               },
             ),
           ],
@@ -47,7 +53,11 @@ class MyApp extends StatelessWidget {
               gradient: LinearGradient(
                 begin: Alignment.bottomLeft,
                 end: Alignment.topRight,
-                colors: [Colors.lightBlueAccent, Colors.deepOrange, Colors.pinkAccent],
+                colors: [
+                  Colors.lightBlueAccent,
+                  Colors.deepOrange,
+                  Colors.pinkAccent,
+                ],
               ),
               duration: Duration(seconds: 1),
               animationDuration: Duration(seconds: 1),
