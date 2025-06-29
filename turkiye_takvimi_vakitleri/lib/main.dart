@@ -10,7 +10,7 @@ import 'package:another_flutter_splash_screen/another_flutter_splash_screen.dart
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
-  runApp(MyApp());
+  runApp(MyApp()); //konum reddediliince nolsun LocationCubit
 }
 // with .w height .h font .sp
 

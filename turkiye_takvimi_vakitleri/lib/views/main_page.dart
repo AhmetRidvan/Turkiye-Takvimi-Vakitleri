@@ -24,7 +24,7 @@ class _MainPageState extends State<MainPage> {
   double? latitude;
   double? longtitude;
   int? id;
-  String _locationCityName = 'İstanbul';
+  String? _locationCityName;
   String _day = '30';
   String _day2 = 'Çarşamba';
   String _month = 'Ağustos';
@@ -38,13 +38,8 @@ class _MainPageState extends State<MainPage> {
   }
 
   Future<void> _getLocation() async {
-    final SharedPreferences prefs = await SharedPreferences.getInstance();
-    context.read<LocationCubit>().getLocation();
-    setState(() {
-      latitude = prefs.getDouble('latitude') ?? 41.0048237;
-      longtitude = prefs.getDouble('longtitude') ?? 28.8157869;
-    });
-    context.read<IdCubit>().getId(lat: latitude!, long: longtitude!);
+    await context.read<LocationCubit>().getLocation();
+    print('asd');
   }
 
   @override
@@ -71,13 +66,17 @@ class _MainPageState extends State<MainPage> {
         listeners: [
           BlocListener<LocationCubit, Position?>(
             listener: (BuildContext context, Position? state) async {
+              final SharedPreferences prefs =
+                  await SharedPreferences.getInstance();
               if (state != null) {
                 setState(() {
                   latitude = state.latitude;
                   longtitude = state.longitude;
+                  context.read<IdCubit>().getId(
+                    lat: latitude!,
+                    long: longtitude!,
+                  );
                 });
-                final SharedPreferences prefs =
-                    await SharedPreferences.getInstance();
                 await prefs.setDouble('latitude', state.latitude);
                 await prefs.setDouble('longtitude', state.longitude);
               }
@@ -89,6 +88,8 @@ class _MainPageState extends State<MainPage> {
                 final c = state.sehir![0];
                 setState(() {
                   _locationCityName = c.cityNameTR!;
+                  id = int.parse(c.iD!);
+                  print(id);
                 });
               }
             },
@@ -214,16 +215,20 @@ class _MainPageState extends State<MainPage> {
               ),
               Expanded(
                 child: Center(
-                  child: Text(
-                    _locationCityName,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: TextStyle(
-                      color: themeColor.onPrimary,
-                      fontSize: 22.sp,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
+                  child: _locationCityName == null
+                      ? CircularProgressIndicator(
+                          color: Theme.of(context).colorScheme.onPrimary,
+                        )
+                      : Text(
+                          _locationCityName!,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(
+                            color: themeColor.onPrimary,
+                            fontSize: 22.sp,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
                 ),
               ),
             ],

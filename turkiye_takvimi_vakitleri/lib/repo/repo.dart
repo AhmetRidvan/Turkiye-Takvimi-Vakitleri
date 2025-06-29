@@ -6,7 +6,7 @@ import 'package:turkiye_takvimi_vakitleri/models/id_model.dart';
 
 class Repo {
   static Future<Position> getLocation() async {
-    bool serviceEnabled;
+    bool serviceEnabled;  
     LocationPermission permission;
 
     // Test if location services are enabled.
@@ -47,7 +47,7 @@ class Repo {
     final _response = await Dio().get(_url);
     final data = IdModel.fromJson(jsonDecode(_response.data));
    
-    print('Id = ${int.parse(data.sehir![0].iD!)}');
+
     return data;
   }
 }

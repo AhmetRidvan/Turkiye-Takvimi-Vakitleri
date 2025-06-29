@@ -6,7 +6,12 @@ class LocationCubit extends Cubit<Position?> {
   LocationCubit() : super(null);
 
   Future<void> getLocation() async {
-    final x = await Repo.getLocation();
-    emit(x);
+    try {
+      final x = await Repo.getLocation();
+      emit(x);
+    } catch (e) {
+      emit(null);
+      print('reddedildi'); 
+    }
   }
 }
