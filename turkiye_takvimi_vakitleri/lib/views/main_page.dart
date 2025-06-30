@@ -1,15 +1,19 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_slider_drawer/flutter_slider_drawer.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:one_clock/one_clock.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:turkiye_takvimi_vakitleri/cubits/id_cubit.dart';
 import 'package:turkiye_takvimi_vakitleri/cubits/location_cubit.dart';
+import 'package:turkiye_takvimi_vakitleri/cubits/times_cubit.dart';
 import 'package:turkiye_takvimi_vakitleri/models/id_model.dart';
+import 'package:turkiye_takvimi_vakitleri/models/time_model.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class MainPage extends StatefulWidget {
   const MainPage({super.key});
@@ -24,22 +28,47 @@ class _MainPageState extends State<MainPage> {
   double? latitude;
   double? longtitude;
   int? id;
+  Times? times;
+  DateTime todayDateTime = DateTime.now();
+
   String? _locationCityName;
   String _day = '30';
   String _day2 = 'Çarşamba';
   String _month = 'Ağustos';
   String _year = '2025';
-  String _hicri = '15.ŞEVVAl hicri';
+
+  String? aksam;
+  String? asriSani;
+  String? hicri;
+  String? dahve;
+  String? geceYarisi;
+  String? gunes;
+  String? ikindi;
+  String? imsak;
+  String? isaisani;
+  String? isfirar;
+  String? israk;
+  String? istibak;
+  String? kerahet;
+  String? kible;
+  String? ogle;
+  String? sabah;
+  String? seher;
+  String? teheccud;
+  String? yatsi;
 
   @override
   void initState() {
     super.initState();
-    _getLocation();
+    _getLocationAndId();
   }
 
-  Future<void> _getLocation() async {
+  Future<void> _getLocationAndId() async {
     await context.read<LocationCubit>().getLocation();
-    print('asd');
+  }
+
+  Future<void> openSettings() async {
+    await launchUrl(Uri.parse('app-settings:')).then((value) {});
   }
 
   @override
@@ -64,10 +93,46 @@ class _MainPageState extends State<MainPage> {
       ),
       child: MultiBlocListener(
         listeners: [
+          BlocListener<TimesCubit, Times?>(
+            listener: (context, state) {
+              if (state != null) {
+                setState(() {
+                  times = state;
+                  final todayTime = times!.cityinfo!.vakit.firstWhere((
+                    element,
+                  ) {
+                    return todayDateTime.day ==
+                            element.attributes!.tarih!.day &&
+                        todayDateTime.month ==
+                            element.attributes!.tarih!.month &&
+                        todayDateTime.year == element.attributes!.tarih!.year;
+                  });
+
+                  aksam = todayTime.aksam;
+                  asriSani = todayTime.asrisani;
+                  hicri = todayTime.attributes!.hicri;
+                  dahve = todayTime.dahve;
+                  geceYarisi = todayTime.geceyarisi;
+                  gunes = todayTime.gunes;
+                  ikindi = todayTime.ikindi;
+                  imsak = todayTime.imsak;
+                  isaisani = todayTime.isaisani;
+                  isfirar = todayTime.isfirar;
+                  israk = todayTime.israk;
+                  istibak = todayTime.istibak;
+                  kerahet = todayTime.kerahet;
+                  kible = todayTime.kible;
+                  ogle = todayTime.ogle;
+                  sabah = todayTime.sabah;
+                  seher = todayTime.seher;
+                  teheccud = todayTime.teheccud;
+                  yatsi = todayTime.yatsi;
+                });
+              }
+            },
+          ),
           BlocListener<LocationCubit, Position?>(
             listener: (BuildContext context, Position? state) async {
-              final SharedPreferences prefs =
-                  await SharedPreferences.getInstance();
               if (state != null) {
                 setState(() {
                   latitude = state.latitude;
@@ -77,8 +142,33 @@ class _MainPageState extends State<MainPage> {
                     long: longtitude!,
                   );
                 });
-                await prefs.setDouble('latitude', state.latitude);
-                await prefs.setDouble('longtitude', state.longitude);
+              } else {
+                showDialog(
+                  barrierDismissible: false,
+                  context: context,
+                  builder: (context) {
+                    return AlertDialog(
+                      content: Text(
+                        'Konum izinleri olmaz ise doğru vakitler gönderilemez.',
+                      ),
+                      actions: [
+                        TextButton(
+                          onPressed: () async {
+                            Navigator.of(context).pop();
+                            await openSettings();
+                          },
+                          child: Text(
+                            'Uygulamayı kapatıp konum izinlerini verip yeniden açmalısınız.',
+                          ),
+                        ),
+                      ],
+                      title: Text(
+                        'Konum izni reddedildi.',
+                        style: TextStyle(fontSize: 20.sp),
+                      ),
+                    );
+                  },
+                );
               }
             },
           ),
@@ -90,74 +180,123 @@ class _MainPageState extends State<MainPage> {
                   _locationCityName = c.cityNameTR!;
                   id = int.parse(c.iD!);
                   print(id);
+                  context.read<TimesCubit>().getTimes(id: id!);
                 });
               }
             },
           ),
         ],
         child: Scaffold(
-          body: Stack(
-            fit: StackFit.expand,
-            children: [
-              Image.asset('images/background.png', fit: BoxFit.fill),
-              customDrawerButton(),
-              customLocationDrawerButton(),
-              Column(
-                mainAxisAlignment: MainAxisAlignment.start,
+          body:
+              Stack(
+                fit: StackFit.expand,
                 children: [
-                  SizedBox(height: 83.h),
-                  customDivider(),
-                  Text(
-                    _hicri,
-                    style: TextStyle(
-                      color: themeColor.primary,
-                      fontSize: 24.sp,
-                      fontWeight: FontWeight.bold,
-                      height: 0.8.h,
-                    ),
-                  ),
-                  Transform.rotate(angle: pi, child: customDivider()),
-                  SizedBox(height: 2.0.h),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-
+                  Image.asset('images/background.png', fit: BoxFit.fill),
+                  customDrawerButton(),
+                  customLocationDrawerButton(),
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
                     children: [
-                      analogClock(),
-                      Column(
-                        children: [
-                          Container(
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(15),
-                              color: themeColor.primary,
-                            ),
-                            child: Padding(
-                              padding: const EdgeInsets.all(3.0),
-                              child: Text(
-                                _day,
-                                style: TextStyle(
-                                  color: themeColor.onPrimary,
-                                  fontSize: 30.sp,
-                                ),
+                      SizedBox(height: 83.h),
+                      customDivider(),
+                      hicri == null
+                          ? CircularProgressIndicator()
+                          : Text(
+                              hicri!,
+                              style: TextStyle(
+                                color: themeColor.primary,
+                                fontSize: 24.sp,
+                                fontWeight: FontWeight.bold,
+                                height: 0.8.h,
                               ),
                             ),
-                          ),
-                          text(_day2, 15),
+                      Transform.rotate(angle: pi, child: customDivider()),
+                      SizedBox(height: 2.0.h),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        crossAxisAlignment: CrossAxisAlignment.center,
 
-                          text(_month, 15),
-                          text(_year, 15),
+                        children: [
+                          analogClock(),
+                          Column(
+                            children: [
+                              Container(
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(15),
+                                  color: themeColor.primary,
+                                ),
+                                child: Padding(
+                                  padding: const EdgeInsets.all(3.0),
+                                  child: Text(
+                                    _day,
+                                    style: TextStyle(
+                                      color: themeColor.onPrimary,
+                                      fontSize: 30.sp,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              text(_day2, 15),
+                              text(_month, 15),
+                              text(_year, 15),
+                            ],
+                          ),
+
+                          analogClock(),
                         ],
                       ),
-
-                      analogClock(),
+                      SizedBox(height: 3.h),
+                      timeWidget(Icons.nightlight_round, Colors.deepOrange),
+                      timeWidget(Icons.wb_twilight, Colors.orange),
+                      timeWidget(Icons.wb_sunny, Colors.orangeAccent),
+                      timeWidget(Icons.wb_sunny_outlined, Colors.yellow),
+                      timeWidget(Icons.cloud_rounded, Colors.grey[400]!),
+                      timeWidget(Icons.nightlight_sharp, Colors.brown),
+                      timeWidget(Icons.nights_stay, Colors.indigo.shade300),
                     ],
                   ),
                 ],
+              ).animate().blur(
+                begin: Offset(222, 222),
+                duration: Duration(milliseconds: 1000),
               ),
-            ],
-          ),
         ),
       ),
+    );
+  }
+
+  Widget timeWidget(IconData d1, Color c1) {
+    return Column(
+      children: [
+        Stack(
+          children: [
+            Container(
+              width: 280.w,
+              height: 50.h,
+              decoration: BoxDecoration(
+                color: Theme.of(context).primaryColor,
+                borderRadius: BorderRadius.circular(300),
+              ),
+            ),
+            Positioned(
+              bottom: 5.h,
+              left: 7.w,
+              child: Container(
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: Theme.of(context).colorScheme.onPrimary,
+                ),
+                width: 40.w,
+                height: 40.h,
+                child: Center(
+                  child: Icon(d1, size: 20.w, color: c1),
+                ),
+              ),
+            ),
+          ],
+        ),
+        SizedBox(height: 3.h),
+      ],
     );
   }
 
@@ -193,7 +332,7 @@ class _MainPageState extends State<MainPage> {
       top: 50.h,
       child: GestureDetector(
         onTap: () {
-          _getLocation();
+          _getLocationAndId();
         },
         child: Container(
           width: 160.w,
@@ -255,8 +394,8 @@ class _MainPageState extends State<MainPage> {
             height: 60.h,
             width: 60.w,
             isLive: true,
-            hourHandColor: Colors.black,
-            minuteHandColor: Colors.black,
+            hourHandColor: Theme.of(context).colorScheme.onSurface,
+            minuteHandColor: Theme.of(context).colorScheme.onSurface,
             showSecondHand: true,
             numberColor: themeColor,
             showNumbers: true,

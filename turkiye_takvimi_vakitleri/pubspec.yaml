@@ -40,9 +40,10 @@ dependencies:
   one_clock: ^2.0.2
   geolocator: ^14.0.1
   flutter_bloc: ^9.1.1
-  shared_preferences: ^2.5.3
   another_flutter_splash_screen: ^1.2.1
   dio: ^5.8.0+1
+  url_launcher: ^6.3.1
+  flutter_animate: ^4.5.2
 
 dev_dependencies:
   flutter_test:

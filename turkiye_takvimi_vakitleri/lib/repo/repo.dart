@@ -3,10 +3,11 @@ import 'dart:convert';
 import 'package:dio/dio.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:turkiye_takvimi_vakitleri/models/id_model.dart';
+import 'package:turkiye_takvimi_vakitleri/models/time_model.dart';
 
 class Repo {
   static Future<Position> getLocation() async {
-    bool serviceEnabled;  
+    bool serviceEnabled;
     LocationPermission permission;
 
     // Test if location services are enabled.
@@ -41,13 +42,22 @@ class Repo {
     return await Geolocator.getCurrentPosition();
   }
 
-  static Future<IdModel> getId({required double lat, required double long}) async {
+  static Future<IdModel> getId({
+    required double lat,
+    required double long,
+  }) async {
     final _url =
         'http://www.turktakvim.com/XMLservis.php?tip=konum&latitude=$lat&longitude=$long&limit=10&radius=45&format=json';
     final _response = await Dio().get(_url);
     final data = IdModel.fromJson(jsonDecode(_response.data));
-   
-
     return data;
+  }
+
+  static Future<Times> getTimes({required int id}) async {
+    final _url =
+        'https://www.turktakvim.com/XMLservis.php?tip=vakit&cityID=$id&format=json';
+    final response = await Dio().get(_url);
+    final object = Times.fromJson(jsonDecode(response.data));
+    return object;
   }
 }

@@ -7,6 +7,5 @@ class IdCubit extends Cubit<IdModel?> {
 
   Future<void> getId({required double lat, required double long}) async {
     emit(await Repo.getId(lat: lat,long: long));
-      
   }
 }
