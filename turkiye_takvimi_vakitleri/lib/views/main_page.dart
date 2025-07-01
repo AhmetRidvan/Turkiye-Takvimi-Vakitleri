@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
@@ -32,10 +33,35 @@ class _MainPageState extends State<MainPage> {
   DateTime todayDateTime = DateTime.now();
 
   String? _locationCityName;
-  String _day = '30';
+  String _day = '';
   String _day2 = 'Çarşamba';
-  String _month = 'Ağustos';
-  String _year = '2025';
+  String _month = '';
+  String _year = '';
+
+  List<String> turkishMonths = [
+    'Ocak',
+    'Şubat',
+    'Mart',
+    'Nisan',
+    'Mayıs',
+    'Haziran',
+    'Temmuz',
+    'Ağustos',
+    'Eylül',
+    'Ekim',
+    'Kasım',
+    'Aralık',
+  ];
+
+  List<String> turkishDays = [
+    'Pazartesi',
+    'Salı',
+    'Çarşamba',
+    'Perşembe',
+    'Cuma',
+    'Cumartesi',
+    'Pazar',
+  ];
 
   String? aksam;
   String? asriSani;
@@ -56,11 +82,76 @@ class _MainPageState extends State<MainPage> {
   String? seher;
   String? teheccud;
   String? yatsi;
+  Timer? checkLocation;
+
+  Timer? _timer;
+  String? kalanVakitLabel = '';
+  Duration? kalanSure;
 
   @override
   void initState() {
     super.initState();
+
     _getLocationAndId();
+
+    _timer = Timer.periodic(Duration(seconds: 1), (timer) {
+      setState(() {
+        _updateKalanVakit();
+      });
+    });
+
+    checkLocation = Timer.periodic(Duration(seconds: 30), (timer) async {
+      await _getLocationAndId();
+    });
+  }
+
+  void _updateKalanVakit() {
+    List<String?> nullCheckList = [
+      imsak,
+      sabah,
+      gunes,
+      ogle,
+      ikindi,
+      aksam,
+      yatsi,
+    ]; //0..6
+    if (nullCheckList.any((element) => element == null)) {
+      return;
+    }
+
+    final now = DateTime.now();
+
+    final vakitler1 = [
+      {'ad': 'İmsak', 'saat': imsak!},
+      {'ad': 'Sabah', 'saat': sabah!},
+      {'ad': 'Güneş', 'saat': gunes!},
+      {'ad': 'Öğle', 'saat': ogle!},
+      {'ad': 'İkindi', 'saat': ikindi!},
+      {'ad': 'Akşam', 'saat': aksam!},
+      {'ad': 'Yatsı', 'saat': yatsi!},
+    ];
+
+    for (int x = 0; x < vakitler1.length; x++) {
+      final timeDateTime = DateTime(
+        now.year,
+        now.month,
+        now.day,
+        int.parse(vakitler1[x]['saat']!.split(':')[0]),
+        int.parse(vakitler1[x]['saat']!.split(':')[1]),
+      );
+      if (now.isBefore(timeDateTime)) {
+        kalanVakitLabel = '${vakitler1[x]['ad']} kalan süre';
+        kalanSure = timeDateTime.difference(now);
+        return;
+      }
+    }
+  }
+
+  @override
+  void dispose() {
+    _timer!.cancel();
+    checkLocation!.cancel();
+    super.dispose();
   }
 
   Future<void> _getLocationAndId() async {
@@ -69,6 +160,13 @@ class _MainPageState extends State<MainPage> {
 
   Future<void> openSettings() async {
     await launchUrl(Uri.parse('app-settings:')).then((value) {});
+  }
+
+  DateTime stringToDateTime(String stringTime) {
+    final x = stringTime.split(':');
+    final hour = int.parse(x[0]);
+    final minute = int.parse(x[1]);
+    return DateTime(2000, 1, 1, hour, minute);
   }
 
   @override
@@ -127,6 +225,10 @@ class _MainPageState extends State<MainPage> {
                   seher = todayTime.seher;
                   teheccud = todayTime.teheccud;
                   yatsi = todayTime.yatsi;
+                  _day = todayDateTime.day.toString();
+                  _month = turkishMonths[todayDateTime.month - 1];
+                  _year = todayDateTime.year.toString();
+                  _day2 = turkishDays[todayDateTime.weekday - 1];
                 });
               }
             },
@@ -215,9 +317,10 @@ class _MainPageState extends State<MainPage> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         crossAxisAlignment: CrossAxisAlignment.center,
-
                         children: [
-                          analogClock(),
+                          gunes == null
+                              ? CircularProgressIndicator()
+                              : analogClock(stringToDateTime(gunes!), false),
                           Column(
                             children: [
                               Container(
@@ -242,18 +345,123 @@ class _MainPageState extends State<MainPage> {
                             ],
                           ),
 
-                          analogClock(),
+                          analogClock(DateTime.now(), true),
                         ],
                       ),
                       SizedBox(height: 3.h),
-                      timeWidget(Icons.nightlight_round, Colors.deepOrange),
-                      timeWidget(Icons.wb_twilight, Colors.orange),
-                      timeWidget(Icons.wb_sunny, Colors.orangeAccent),
-                      timeWidget(Icons.wb_sunny_outlined, Colors.yellow),
-                      timeWidget(Icons.cloud_rounded, Colors.grey[400]!),
-                      timeWidget(Icons.nightlight_sharp, Colors.brown),
-                      timeWidget(Icons.nights_stay, Colors.indigo.shade300),
+                      imsak == null
+                          ? CircularProgressIndicator()
+                          : timeWidget(
+                              Icons.nightlight_round,
+                              Colors.deepOrange,
+                              'İmsak',
+                              imsak!,
+                              true,
+                            ),
+                      sabah == null
+                          ? CircularProgressIndicator()
+                          : timeWidget(
+                              Icons.wb_twilight,
+                              Colors.orange,
+                              'Sabah',
+                              sabah!,
+                              false,
+                            ),
+                      gunes == null
+                          ? CircularProgressIndicator()
+                          : timeWidget(
+                              Icons.wb_sunny,
+                              Colors.orangeAccent,
+                              'Güneş',
+                              gunes!,
+                              false,
+                            ),
+                      ogle == null
+                          ? CircularProgressIndicator()
+                          : timeWidget(
+                              Icons.wb_sunny_outlined,
+                              Colors.yellow,
+                              'Öğle',
+                              ogle!,
+                              false,
+                            ),
+                      ikindi == null
+                          ? CircularProgressIndicator()
+                          : timeWidget(
+                              Icons.cloud_rounded,
+                              Colors.grey[400]!,
+                              'İkindi',
+                              ikindi!,
+                              false,
+                            ),
+                      aksam == null
+                          ? CircularProgressIndicator()
+                          : timeWidget(
+                              Icons.nightlight_sharp,
+                              Colors.brown,
+                              'Akşam',
+                              aksam!,
+                              false,
+                            ),
+                      yatsi == null
+                          ? CircularProgressIndicator()
+                          : timeWidget(
+                              Icons.nights_stay,
+                              Colors.indigo.shade300,
+                              'Yatsı',
+                              yatsi!,
+                              false,
+                            ),
+                      Image.asset(
+                        width: 300.w,
+                        'images/divider2.png',
+                        color: Theme.of(context).colorScheme.primary,
+                      ),
+                      SizedBox(height: 2.5.h),
+                      yatsi == null
+                          ? CircularProgressIndicator()
+                          : Column(
+                              children: [
+                                Stack(
+                                  children: [
+                                    Container(
+                                      width: 340.w,
+                                      height: 75.h,
+                                      decoration: BoxDecoration(
+                                        color: Theme.of(
+                                          context,
+                                        ).colorScheme.primary,
+                                        borderRadius: BorderRadius.circular(
+                                          300,
+                                        ),
+                                      ),
+                                      child: Center(
+                                        child: Text(
+                                          'İkindiye kalan\n21 saat 21 dakika 21 saniye',
+                                          textAlign: TextAlign.center,
+                                          style: TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 23.sp,
+                                            color: Theme.of(
+                                              context,
+                                            ).colorScheme.onPrimary,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
                     ],
+                  ),
+                  Positioned(
+                    bottom: 25.h,
+                    left: 125.w,
+
+                    child: Center(
+                      child: Image.asset('images/bottom.png', height: 50.h),
+                    ),
                   ),
                 ],
               ).animate().blur(
@@ -265,32 +473,71 @@ class _MainPageState extends State<MainPage> {
     );
   }
 
-  Widget timeWidget(IconData d1, Color c1) {
+  Widget timeWidget(
+    IconData d1,
+    Color c1,
+    String text1,
+    String text2,
+    bool active,
+  ) {
     return Column(
       children: [
         Stack(
           children: [
             Container(
-              width: 280.w,
-              height: 50.h,
+              width: 250.w,
+              height: 40.h,
               decoration: BoxDecoration(
-                color: Theme.of(context).primaryColor,
+                color: active == true
+                    ? Theme.of(context).colorScheme.error
+                    : Theme.of(context).colorScheme.primary,
                 borderRadius: BorderRadius.circular(300),
               ),
             ),
             Positioned(
-              bottom: 5.h,
-              left: 7.w,
+              bottom: 2.5.h,
+              left: 5.w,
               child: Container(
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   color: Theme.of(context).colorScheme.onPrimary,
                 ),
-                width: 40.w,
-                height: 40.h,
+                width: 35.w,
+                height: 35.h,
                 child: Center(
-                  child: Icon(d1, size: 20.w, color: c1),
+                  child: Icon(d1, size: 30.w, color: c1),
                 ),
+              ),
+            ),
+            Positioned(
+              width: 200.w,
+              height: 40.h,
+              left: 50.w,
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Text(
+                      text1,
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 23.sp,
+                        color: Theme.of(context).colorScheme.onPrimary,
+                      ),
+                    ),
+                  ),
+
+                  Expanded(
+                    child: Text(
+                      text2,
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: 23.sp,
+                        fontWeight: FontWeight.bold,
+                        color: Theme.of(context).colorScheme.onPrimary,
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ),
           ],
@@ -377,7 +624,7 @@ class _MainPageState extends State<MainPage> {
     );
   }
 
-  Widget analogClock() {
+  Widget analogClock(DateTime d1, bool show) {
     final themeColor = Theme.of(context).colorScheme.primary;
     return Stack(
       children: [
@@ -396,14 +643,14 @@ class _MainPageState extends State<MainPage> {
             isLive: true,
             hourHandColor: Theme.of(context).colorScheme.onSurface,
             minuteHandColor: Theme.of(context).colorScheme.onSurface,
-            showSecondHand: true,
+            showSecondHand: show,
             numberColor: themeColor,
             showNumbers: true,
             showAllNumbers: true,
             textScaleFactor: 3.4.sp,
             showTicks: false,
             showDigitalClock: false,
-            datetime: DateTime.now(),
+            datetime: d1,
           ),
         ),
       ],
@@ -428,3 +675,65 @@ class _MainPageState extends State<MainPage> {
     );
   }
 }
+
+/*
+// ..._MainPageState içinde...
+
+Timer? _timer;
+String kalanVakitLabel = '';
+Duration? kalanSure;
+
+@override
+void initState() {
+  super.initState();
+  _getLocationAndId();
+  _timer = Timer.periodic(Duration(seconds: 1), (_) => setState(() => _updateKalanVakit()));
+  checkLocation = Timer.periodic(Duration(seconds: 30), (timer) async {
+    await _getLocationAndId();
+  });
+}
+
+@override
+void dispose() {
+  checkLocation?.cancel();
+  _timer?.cancel();
+  super.dispose();
+}
+
+void _updateKalanVakit() {
+  if ([imsak, sabah, gunes, ogle, ikindi, aksam, yatsi].any((v) => v == null)) return;
+  final now = DateTime.now();
+  final vakitler = [
+    {'ad': 'İmsak', 'saat': imsak!},
+    {'ad': 'Sabah', 'saat': sabah!},
+    {'ad': 'Güneş', 'saat': gunes!},
+    {'ad': 'Öğle', 'saat': ogle!},
+    {'ad': 'İkindi', 'saat': ikindi!},
+    {'ad': 'Akşam', 'saat': aksam!},
+    {'ad': 'Yatsı', 'saat': yatsi!},
+  ];
+  for (int i = 0; i < vakitler.length; i++) {
+    final dt = DateTime(now.year, now.month, now.day,
+        int.parse(vakitler[i]['saat']!.split(':')[0]),
+        int.parse(vakitler[i]['saat']!.split(':')[1]));
+    if (now.isBefore(dt)) {
+      kalanVakitLabel = '${vakitler[i]['ad']}e kalan';
+      kalanSure = dt.difference(now);
+      return;
+    }
+  }
+  // Gün bitti, yarının imsakına kadar göster
+  final yarinImsak = DateTime(now.year, now.month, now.day + 1,
+      int.parse(imsak!.split(':')[0]), int.parse(imsak!.split(':')[1]));
+  kalanVakitLabel = 'İmsake kalan';
+  kalanSure = yarinImsak.difference(now);
+}
+
+String kalanSureFormat() {
+  if (kalanSure == null) return '';
+  final h = kalanSure!.inHours;
+  final m = kalanSure!.inMinutes % 60;
+  final s = kalanSure!.inSeconds % 60;
+  return '$h saat $m dakika $s saniye';
+}
+*/

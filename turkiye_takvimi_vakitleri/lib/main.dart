@@ -44,11 +44,7 @@ class MyApp extends StatelessWidget {
             ),
           ],
           child: MaterialApp(
-            theme: ThemeData(
-              colorScheme: ColorScheme.fromSeed(
-                seedColor: Colors.deepOrangeAccent,
-              ),
-            ),
+            theme: ThemeData(colorSchemeSeed: Colors.amber),
             debugShowCheckedModeBanner: false,
             home: FlutterSplashScreen.scale(
               childWidget: SizedBox(

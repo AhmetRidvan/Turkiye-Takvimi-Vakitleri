@@ -10,7 +10,7 @@ class LocationCubit extends Cubit<Position?> {
       final x = await Repo.getLocation();
       emit(x);
     } catch (e) {
-      emit(null);
+     emit(null);
       print('reddedildi'); 
     }
   }
