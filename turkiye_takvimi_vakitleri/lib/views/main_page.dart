@@ -146,7 +146,6 @@ class _MainPageState extends State<MainPage> {
         aktifVakitAdi = vakitler1[i]['ad'];
         return;
       }
-
     }
     final yarinkiImsak = DateTime(
       now.year,
@@ -157,7 +156,7 @@ class _MainPageState extends State<MainPage> {
     );
     kalanVakitLabel = 'İmsaka kalan';
     aktifVakitAdi = 'İmsaka kalan';
- 
+
     kalanSure = yarinkiImsak.difference(now);
   }
 
@@ -438,7 +437,7 @@ class _MainPageState extends State<MainPage> {
                               Colors.brown,
                               'Akşam',
                               aksam!,
-                              aktifVakitAdi == 'Akşama'
+                              aktifVakitAdi == 'Yatsıya'
                                   ? Theme.of(context).colorScheme.error
                                   : Theme.of(context).colorScheme.primary,
                             ),
