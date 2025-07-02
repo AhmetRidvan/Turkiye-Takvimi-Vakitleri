@@ -37,6 +37,7 @@ class _MainPageState extends State<MainPage> {
   String _day2 = 'Çarşamba';
   String _month = '';
   String _year = '';
+  String? aktifVakitAdi;
 
   List<String> turkishMonths = [
     'Ocak',
@@ -122,29 +123,55 @@ class _MainPageState extends State<MainPage> {
     final now = DateTime.now();
 
     final vakitler1 = [
-      {'ad': 'İmsak', 'saat': imsak!},
-      {'ad': 'Sabah', 'saat': sabah!},
-      {'ad': 'Güneş', 'saat': gunes!},
-      {'ad': 'Öğle', 'saat': ogle!},
-      {'ad': 'İkindi', 'saat': ikindi!},
-      {'ad': 'Akşam', 'saat': aksam!},
-      {'ad': 'Yatsı', 'saat': yatsi!},
+      {'ad': 'İmsaka', 'saat': imsak!},
+      {'ad': 'Sabaha', 'saat': sabah!},
+      {'ad': 'Güneşe', 'saat': gunes!},
+      {'ad': 'Öğleye', 'saat': ogle!},
+      {'ad': 'İkindiye', 'saat': ikindi!},
+      {'ad': 'Akşama', 'saat': aksam!},
+      {'ad': 'Yatsıya', 'saat': yatsi!},
     ];
 
-    for (int x = 0; x < vakitler1.length; x++) {
-      final timeDateTime = DateTime(
+    for (int i = 0; i < vakitler1.length; i++) {
+      final dt = DateTime(
         now.year,
         now.month,
         now.day,
-        int.parse(vakitler1[x]['saat']!.split(':')[0]),
-        int.parse(vakitler1[x]['saat']!.split(':')[1]),
+        int.parse(vakitler1[i]['saat']!.split(':')[0]),
+        int.parse(vakitler1[i]['saat']!.split(':')[1]),
       );
-      if (now.isBefore(timeDateTime)) {
-        kalanVakitLabel = '${vakitler1[x]['ad']} kalan süre';
-        kalanSure = timeDateTime.difference(now);
+      if (now.isBefore(dt)) {
+        kalanVakitLabel = '${vakitler1[i]['ad']} kalan';
+        kalanSure = dt.difference(now);
+        aktifVakitAdi = vakitler1[i]['ad'];
         return;
       }
+
     }
+    final yarinkiImsak = DateTime(
+      now.year,
+      now.month,
+      now.day + 1,
+      int.parse(imsak!.split(':')[0]),
+      int.parse(imsak!.split(':')[1]),
+    );
+    kalanVakitLabel = 'İmsaka kalan';
+    aktifVakitAdi = 'İmsaka kalan';
+ 
+    kalanSure = yarinkiImsak.difference(now);
+  }
+
+  String kalanSureFormat() {
+    if (kalanSure == null) return '';
+    final h = kalanSure!.inHours;
+    final m = kalanSure!.inMinutes % 60;
+    final s = kalanSure!.inSeconds % 60;
+
+    String result = '';
+    if (h > 0) result += '$h Saat ';
+    if (m > 0) result += '$m Dakika ';
+    if (s > 0) result += '$s Saniye';
+    return result;
   }
 
   @override
@@ -356,7 +383,9 @@ class _MainPageState extends State<MainPage> {
                               Colors.deepOrange,
                               'İmsak',
                               imsak!,
-                              true,
+                              aktifVakitAdi == 'Sabaha'
+                                  ? Theme.of(context).colorScheme.error
+                                  : Theme.of(context).colorScheme.primary,
                             ),
                       sabah == null
                           ? CircularProgressIndicator()
@@ -365,7 +394,9 @@ class _MainPageState extends State<MainPage> {
                               Colors.orange,
                               'Sabah',
                               sabah!,
-                              false,
+                              aktifVakitAdi == 'Güneşe'
+                                  ? Theme.of(context).colorScheme.error
+                                  : Theme.of(context).colorScheme.primary,
                             ),
                       gunes == null
                           ? CircularProgressIndicator()
@@ -374,7 +405,9 @@ class _MainPageState extends State<MainPage> {
                               Colors.orangeAccent,
                               'Güneş',
                               gunes!,
-                              false,
+                              aktifVakitAdi == 'Öğlene'
+                                  ? Theme.of(context).colorScheme.error
+                                  : Theme.of(context).colorScheme.primary,
                             ),
                       ogle == null
                           ? CircularProgressIndicator()
@@ -383,7 +416,9 @@ class _MainPageState extends State<MainPage> {
                               Colors.yellow,
                               'Öğle',
                               ogle!,
-                              false,
+                              aktifVakitAdi == 'İkindiye'
+                                  ? Theme.of(context).colorScheme.error
+                                  : Theme.of(context).colorScheme.primary,
                             ),
                       ikindi == null
                           ? CircularProgressIndicator()
@@ -392,7 +427,9 @@ class _MainPageState extends State<MainPage> {
                               Colors.grey[400]!,
                               'İkindi',
                               ikindi!,
-                              false,
+                              aktifVakitAdi == 'Akşama'
+                                  ? Theme.of(context).colorScheme.error
+                                  : Theme.of(context).colorScheme.primary,
                             ),
                       aksam == null
                           ? CircularProgressIndicator()
@@ -401,7 +438,9 @@ class _MainPageState extends State<MainPage> {
                               Colors.brown,
                               'Akşam',
                               aksam!,
-                              false,
+                              aktifVakitAdi == 'Akşama'
+                                  ? Theme.of(context).colorScheme.error
+                                  : Theme.of(context).colorScheme.primary,
                             ),
                       yatsi == null
                           ? CircularProgressIndicator()
@@ -410,7 +449,9 @@ class _MainPageState extends State<MainPage> {
                               Colors.indigo.shade300,
                               'Yatsı',
                               yatsi!,
-                              false,
+                              aktifVakitAdi == 'İmsaka kalan'
+                                  ? Theme.of(context).colorScheme.error
+                                  : Theme.of(context).colorScheme.primary,
                             ),
                       Image.asset(
                         width: 300.w,
@@ -436,16 +477,33 @@ class _MainPageState extends State<MainPage> {
                                         ),
                                       ),
                                       child: Center(
-                                        child: Text(
-                                          'İkindiye kalan\n21 saat 21 dakika 21 saniye',
-                                          textAlign: TextAlign.center,
-                                          style: TextStyle(
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: 23.sp,
-                                            color: Theme.of(
-                                              context,
-                                            ).colorScheme.onPrimary,
-                                          ),
+                                        child: Column(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: [
+                                            Text(
+                                              kalanVakitLabel ?? '',
+                                              textAlign: TextAlign.center,
+                                              style: TextStyle(
+                                                fontWeight: FontWeight.bold,
+                                                fontSize: 23.sp,
+                                                color: Theme.of(
+                                                  context,
+                                                ).colorScheme.onPrimary,
+                                              ),
+                                            ),
+                                            Text(
+                                              kalanSureFormat(),
+                                              textAlign: TextAlign.center,
+                                              style: TextStyle(
+                                                fontWeight: FontWeight.bold,
+                                                fontSize: 23.sp,
+                                                color: Theme.of(
+                                                  context,
+                                                ).colorScheme.onPrimary,
+                                              ),
+                                            ),
+                                          ],
                                         ),
                                       ),
                                     ),
@@ -478,7 +536,7 @@ class _MainPageState extends State<MainPage> {
     Color c1,
     String text1,
     String text2,
-    bool active,
+    Color color,
   ) {
     return Column(
       children: [
@@ -488,9 +546,7 @@ class _MainPageState extends State<MainPage> {
               width: 250.w,
               height: 40.h,
               decoration: BoxDecoration(
-                color: active == true
-                    ? Theme.of(context).colorScheme.error
-                    : Theme.of(context).colorScheme.primary,
+                color: color,
                 borderRadius: BorderRadius.circular(300),
               ),
             ),
