@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:dio/dio.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:turkiye_takvimi_vakitleri/models/arka_sayfa_model.dart';
 import 'package:turkiye_takvimi_vakitleri/models/id_model.dart';
 import 'package:turkiye_takvimi_vakitleri/models/time_model.dart';
 
@@ -59,5 +60,13 @@ class Repo {
     final response = await Dio().get(_url);
     final object = Times.fromJson(jsonDecode(response.data));
     return object;
+  }
+
+  static Future<ArkaSayfaModel> getArkaSayfa(DateTime tarih) async {
+    final _url =
+        'https://www.turktakvim.com/JSONservis_takvim.php?baslangic=$tarih&bitis=$tarih&format=json';
+    final x = await Dio().get(_url);
+    final jsonX = x.data as List;
+    return ArkaSayfaModel.fromJson(jsonX[1]);
   }
 }

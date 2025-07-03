@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:math';
 
+import 'package:app_settings/app_settings.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_animate/flutter_animate.dart';
@@ -9,12 +10,13 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_slider_drawer/flutter_slider_drawer.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:one_clock/one_clock.dart';
+import 'package:turkiye_takvimi_vakitleri/cubits/arka_sayfa_cubit.dart';
 import 'package:turkiye_takvimi_vakitleri/cubits/id_cubit.dart';
 import 'package:turkiye_takvimi_vakitleri/cubits/location_cubit.dart';
 import 'package:turkiye_takvimi_vakitleri/cubits/times_cubit.dart';
+import 'package:turkiye_takvimi_vakitleri/models/arka_sayfa_model.dart';
 import 'package:turkiye_takvimi_vakitleri/models/id_model.dart';
 import 'package:turkiye_takvimi_vakitleri/models/time_model.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 class MainPage extends StatefulWidget {
   const MainPage({super.key});
@@ -94,16 +96,6 @@ class _MainPageState extends State<MainPage> {
     super.initState();
 
     _getLocationAndId();
-
-    _timer = Timer.periodic(Duration(seconds: 1), (timer) {
-      setState(() {
-        _updateKalanVakit();
-      });
-    });
-
-    checkLocation = Timer.periodic(Duration(seconds: 30), (timer) async {
-      await _getLocationAndId();
-    });
   }
 
   void _updateKalanVakit() {
@@ -144,6 +136,7 @@ class _MainPageState extends State<MainPage> {
         kalanVakitLabel = '${vakitler1[i]['ad']} kalan';
         kalanSure = dt.difference(now);
         aktifVakitAdi = vakitler1[i]['ad'];
+
         return;
       }
     }
@@ -158,6 +151,75 @@ class _MainPageState extends State<MainPage> {
     aktifVakitAdi = 'İmsaka kalan';
 
     kalanSure = yarinkiImsak.difference(now);
+  }
+
+  Future<void> showLocationPermissionDialog() async {
+    await showDialog(
+      barrierColor: Colors.transparent,
+      barrierDismissible: false,
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          icon: Column(
+            children: [
+              TextButton(
+                child: Text(
+                  textAlign: TextAlign.center,
+                  'İzinleri verdiyseniz tekrar denemek için dokununuz.',
+                  style: TextStyle(
+                    color: Theme.of(context).colorScheme.error,
+                    fontSize: 20.sp,
+                  ),
+                ),
+                onPressed: () async {
+                  final x = await Geolocator.checkPermission();
+                  if (x == LocationPermission.whileInUse ||
+                      x == LocationPermission.always) {
+                    Navigator.pop(context);
+                    _getLocationAndId();
+                  } else {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Center(
+                          child: Text(
+                            'İzin yok.',
+                            style: TextStyle(fontSize: 30.sp),
+                          ),
+                        ),
+                        backgroundColor: Colors.redAccent,
+                      ),
+                    );
+                  }
+                },
+              ),
+            ],
+          ),
+          content: Text(
+            textAlign: TextAlign.center,
+            'Konum izinleri olmaz ise doğru vakitler gönderilemez.',
+            style: TextStyle(fontSize: 20.sp),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () async {
+                await openSettings();
+              },
+              child: Text(
+                'Konum izni ver.',
+                style: TextStyle(
+                  color: Theme.of(context).colorScheme.error,
+                  fontSize: 20.sp,
+                ),
+              ),
+            ),
+          ],
+          title: Text(
+            'Konum izni reddedildi.',
+            style: TextStyle(fontSize: 20.sp),
+          ),
+        );
+      },
+    );
   }
 
   String kalanSureFormat() {
@@ -182,10 +244,20 @@ class _MainPageState extends State<MainPage> {
 
   Future<void> _getLocationAndId() async {
     await context.read<LocationCubit>().getLocation();
+    _timer = Timer.periodic(Duration(seconds: 1), (timer) {
+      setState(() {
+        _updateKalanVakit();
+      });
+    });
+
+    checkLocation = Timer.periodic(Duration(seconds: 30), (timer) async {
+      await _getLocationAndId();
+    });
+    
   }
 
   Future<void> openSettings() async {
-    await launchUrl(Uri.parse('app-settings:')).then((value) {});
+    await AppSettings.openAppSettings();
   }
 
   DateTime stringToDateTime(String stringTime) {
@@ -197,6 +269,20 @@ class _MainPageState extends State<MainPage> {
 
   @override
   Widget build(BuildContext context) {
+    bool isEverythingReady() {
+      return [
+        _locationCityName,
+        imsak,
+        sabah,
+        gunes,
+        ogle,
+        ikindi,
+        aksam,
+        yatsi,
+        hicri,
+      ].every((element) => element != null);
+    }
+
     final themeColor = Theme.of(context).colorScheme;
     return SliderDrawer(
       isDraggable: true,
@@ -259,6 +345,7 @@ class _MainPageState extends State<MainPage> {
               }
             },
           ),
+
           BlocListener<LocationCubit, Position?>(
             listener: (BuildContext context, Position? state) async {
               if (state != null) {
@@ -271,32 +358,7 @@ class _MainPageState extends State<MainPage> {
                   );
                 });
               } else {
-                showDialog(
-                  barrierDismissible: false,
-                  context: context,
-                  builder: (context) {
-                    return AlertDialog(
-                      content: Text(
-                        'Konum izinleri olmaz ise doğru vakitler gönderilemez.',
-                      ),
-                      actions: [
-                        TextButton(
-                          onPressed: () async {
-                            Navigator.of(context).pop();
-                            await openSettings();
-                          },
-                          child: Text(
-                            'Uygulamayı kapatıp konum izinlerini verip yeniden açmalısınız.',
-                          ),
-                        ),
-                      ],
-                      title: Text(
-                        'Konum izni reddedildi.',
-                        style: TextStyle(fontSize: 20.sp),
-                      ),
-                    );
-                  },
-                );
+                showLocationPermissionDialog();
               }
             },
           ),
@@ -307,7 +369,7 @@ class _MainPageState extends State<MainPage> {
                 setState(() {
                   _locationCityName = c.cityNameTR!;
                   id = int.parse(c.iD!);
-                  print(id);
+
                   context.read<TimesCubit>().getTimes(id: id!);
                 });
               }
@@ -315,216 +377,196 @@ class _MainPageState extends State<MainPage> {
           ),
         ],
         child: Scaffold(
-          body:
-              Stack(
-                fit: StackFit.expand,
-                children: [
-                  Image.asset('images/background.png', fit: BoxFit.fill),
-                  customDrawerButton(),
-                  customLocationDrawerButton(),
-                  Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      SizedBox(height: 83.h),
-                      customDivider(),
-                      hicri == null
-                          ? CircularProgressIndicator()
-                          : Text(
-                              hicri!,
-                              style: TextStyle(
-                                color: themeColor.primary,
-                                fontSize: 24.sp,
-                                fontWeight: FontWeight.bold,
-                                height: 0.8.h,
-                              ),
-                            ),
-                      Transform.rotate(angle: pi, child: customDivider()),
-                      SizedBox(height: 2.0.h),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          gunes == null
-                              ? CircularProgressIndicator()
-                              : analogClock(stringToDateTime(gunes!), false),
-                          Column(
-                            children: [
-                              Container(
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(15),
-                                  color: themeColor.primary,
-                                ),
-                                child: Padding(
-                                  padding: const EdgeInsets.all(3.0),
-                                  child: Text(
-                                    _day,
-                                    style: TextStyle(
-                                      color: themeColor.onPrimary,
-                                      fontSize: 30.sp,
+          body: isEverythingReady()
+              ? Stack(
+                  fit: StackFit.expand,
+                  children: [
+                    Image.asset('images/background.png', fit: BoxFit.fill),
+                    customDrawerButton(),
+                    customLocationDrawerButton(),
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        SizedBox(height: 83.h),
+                        customDivider(),
+                        Text(
+                          hicri!,
+                          style: TextStyle(
+                            color: themeColor.primary,
+                            fontSize: 24.sp,
+                            fontWeight: FontWeight.bold,
+                            height: 0.8.h,
+                          ),
+                        ),
+                        Transform.rotate(angle: pi, child: customDivider()),
+                        SizedBox(height: 2.0.h),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            analogClock(stringToDateTime(gunes!), false),
+                            Column(
+                              children: [
+                                Container(
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(15),
+                                    color: themeColor.primary,
+                                  ),
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(3.0),
+                                    child: Text(
+                                      _day,
+                                      style: TextStyle(
+                                        color: themeColor.onPrimary,
+                                        fontSize: 30.sp,
+                                      ),
                                     ),
                                   ),
                                 ),
-                              ),
-                              text(_day2, 15),
-                              text(_month, 15),
-                              text(_year, 15),
-                            ],
-                          ),
+                                text(_day2, 15),
+                                text(_month, 15),
+                                text(_year, 15),
+                              ],
+                            ),
 
-                          analogClock(DateTime.now(), true),
-                        ],
-                      ),
-                      SizedBox(height: 3.h),
-                      imsak == null
-                          ? CircularProgressIndicator()
-                          : timeWidget(
-                              Icons.nightlight_round,
-                              Colors.deepOrange,
-                              'İmsak',
-                              imsak!,
-                              aktifVakitAdi == 'Sabaha'
-                                  ? Theme.of(context).colorScheme.error
-                                  : Theme.of(context).colorScheme.primary,
-                            ),
-                      sabah == null
-                          ? CircularProgressIndicator()
-                          : timeWidget(
-                              Icons.wb_twilight,
-                              Colors.orange,
-                              'Sabah',
-                              sabah!,
-                              aktifVakitAdi == 'Güneşe'
-                                  ? Theme.of(context).colorScheme.error
-                                  : Theme.of(context).colorScheme.primary,
-                            ),
-                      gunes == null
-                          ? CircularProgressIndicator()
-                          : timeWidget(
-                              Icons.wb_sunny,
-                              Colors.orangeAccent,
-                              'Güneş',
-                              gunes!,
-                              aktifVakitAdi == 'Öğlene'
-                                  ? Theme.of(context).colorScheme.error
-                                  : Theme.of(context).colorScheme.primary,
-                            ),
-                      ogle == null
-                          ? CircularProgressIndicator()
-                          : timeWidget(
-                              Icons.wb_sunny_outlined,
-                              Colors.yellow,
-                              'Öğle',
-                              ogle!,
-                              aktifVakitAdi == 'İkindiye'
-                                  ? Theme.of(context).colorScheme.error
-                                  : Theme.of(context).colorScheme.primary,
-                            ),
-                      ikindi == null
-                          ? CircularProgressIndicator()
-                          : timeWidget(
-                              Icons.cloud_rounded,
-                              Colors.grey[400]!,
-                              'İkindi',
-                              ikindi!,
-                              aktifVakitAdi == 'Akşama'
-                                  ? Theme.of(context).colorScheme.error
-                                  : Theme.of(context).colorScheme.primary,
-                            ),
-                      aksam == null
-                          ? CircularProgressIndicator()
-                          : timeWidget(
-                              Icons.nightlight_sharp,
-                              Colors.brown,
-                              'Akşam',
-                              aksam!,
-                              aktifVakitAdi == 'Yatsıya'
-                                  ? Theme.of(context).colorScheme.error
-                                  : Theme.of(context).colorScheme.primary,
-                            ),
-                      yatsi == null
-                          ? CircularProgressIndicator()
-                          : timeWidget(
-                              Icons.nights_stay,
-                              Colors.indigo.shade300,
-                              'Yatsı',
-                              yatsi!,
-                              aktifVakitAdi == 'İmsaka kalan'
-                                  ? Theme.of(context).colorScheme.error
-                                  : Theme.of(context).colorScheme.primary,
-                            ),
-                      Image.asset(
-                        width: 300.w,
-                        'images/divider2.png',
-                        color: Theme.of(context).colorScheme.primary,
-                      ),
-                      SizedBox(height: 2.5.h),
-                      yatsi == null
-                          ? CircularProgressIndicator()
-                          : Column(
+                            analogClock(DateTime.now(), true),
+                          ],
+                        ),
+                        SizedBox(height: 3.h),
+
+                        timeWidget(
+                          Icons.nightlight_round,
+                          Colors.deepOrange,
+                          'İmsak',
+                          imsak!,
+                          aktifVakitAdi == 'Sabaha'
+                              ? Theme.of(context).colorScheme.error
+                              : Theme.of(context).colorScheme.primary,
+                        ),
+                        timeWidget(
+                          Icons.wb_twilight,
+                          Colors.orange,
+                          'Sabah',
+                          sabah!,
+                          aktifVakitAdi == 'Güneşe'
+                              ? Theme.of(context).colorScheme.error
+                              : Theme.of(context).colorScheme.primary,
+                        ),
+                        timeWidget(
+                          Icons.wb_sunny,
+                          Colors.orangeAccent,
+                          'Güneş',
+                          gunes!,
+                          aktifVakitAdi == 'Öğleye'
+                              ? Theme.of(context).colorScheme.error
+                              : Theme.of(context).colorScheme.primary,
+                        ),
+                        timeWidget(
+                          Icons.wb_sunny_outlined,
+                          Colors.yellow,
+                          'Öğle',
+                          ogle!,
+                          aktifVakitAdi == 'İkindiye'
+                              ? Theme.of(context).colorScheme.error
+                              : Theme.of(context).colorScheme.primary,
+                        ),
+                        timeWidget(
+                          Icons.cloud_rounded,
+                          Colors.grey[400]!,
+                          'İkindi',
+                          ikindi!,
+                          aktifVakitAdi == 'Akşama'
+                              ? Theme.of(context).colorScheme.error
+                              : Theme.of(context).colorScheme.primary,
+                        ),
+                        timeWidget(
+                          Icons.nightlight_sharp,
+                          Colors.brown,
+                          'Akşam',
+                          aksam!,
+                          aktifVakitAdi == 'Yatsıya'
+                              ? Theme.of(context).colorScheme.error
+                              : Theme.of(context).colorScheme.primary,
+                        ),
+                        timeWidget(
+                          Icons.nights_stay,
+                          Colors.indigo.shade300,
+                          'Yatsı',
+                          yatsi!,
+                          aktifVakitAdi == 'İmsaka kalan'
+                              ? Theme.of(context).colorScheme.error
+                              : Theme.of(context).colorScheme.primary,
+                        ),
+                        Image.asset(
+                          width: 300.w,
+                          'images/divider2.png',
+                          color: Theme.of(context).colorScheme.primary,
+                        ),
+                        SizedBox(height: 2.5.h),
+                        Column(
+                          children: [
+                            Stack(
                               children: [
-                                Stack(
-                                  children: [
-                                    Container(
-                                      width: 340.w,
-                                      height: 75.h,
-                                      decoration: BoxDecoration(
-                                        color: Theme.of(
-                                          context,
-                                        ).colorScheme.primary,
-                                        borderRadius: BorderRadius.circular(
-                                          300,
+                                Container(
+                                  width: 340.w,
+                                  height: 75.h,
+                                  decoration: BoxDecoration(
+                                    color: Theme.of(
+                                      context,
+                                    ).colorScheme.primary,
+                                    borderRadius: BorderRadius.circular(300),
+                                  ),
+                                  child: Center(
+                                    child: Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        Text(
+                                          kalanVakitLabel ?? '',
+                                          textAlign: TextAlign.center,
+                                          style: TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 23.sp,
+                                            color: Theme.of(
+                                              context,
+                                            ).colorScheme.onPrimary,
+                                          ),
                                         ),
-                                      ),
-                                      child: Center(
-                                        child: Column(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          children: [
-                                            Text(
-                                              kalanVakitLabel ?? '',
-                                              textAlign: TextAlign.center,
-                                              style: TextStyle(
-                                                fontWeight: FontWeight.bold,
-                                                fontSize: 23.sp,
-                                                color: Theme.of(
-                                                  context,
-                                                ).colorScheme.onPrimary,
-                                              ),
-                                            ),
-                                            Text(
-                                              kalanSureFormat(),
-                                              textAlign: TextAlign.center,
-                                              style: TextStyle(
-                                                fontWeight: FontWeight.bold,
-                                                fontSize: 23.sp,
-                                                color: Theme.of(
-                                                  context,
-                                                ).colorScheme.onPrimary,
-                                              ),
-                                            ),
-                                          ],
+                                        Text(
+                                          kalanSureFormat(),
+                                          textAlign: TextAlign.center,
+                                          style: TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 23.sp,
+                                            color: Theme.of(
+                                              context,
+                                            ).colorScheme.onPrimary,
+                                          ),
                                         ),
-                                      ),
+                                      ],
                                     ),
-                                  ],
+                                  ),
                                 ),
                               ],
                             ),
-                    ],
-                  ),
-                  Positioned(
-                    bottom: 25.h,
-                    left: 125.w,
-
-                    child: Center(
-                      child: Image.asset('images/bottom.png', height: 50.h),
+                          ],
+                        ),
+                      ],
                     ),
-                  ),
-                ],
-              ).animate().blur(
-                begin: Offset(222, 222),
-                duration: Duration(milliseconds: 1000),
-              ),
+                    Positioned(
+                      bottom: 25.h,
+                      left: 125.w,
+
+                      child: Center(
+                        child: Image.asset('images/bottom.png', height: 50.h),
+                      ),
+                    ),
+                  ],
+                ).animate().blur(
+                  begin: Offset(222, 222),
+                  duration: Duration(milliseconds: 1000),
+                )
+              : Center(child: CircularProgressIndicator()),
         ),
       ),
     );
@@ -656,20 +698,16 @@ class _MainPageState extends State<MainPage> {
               ),
               Expanded(
                 child: Center(
-                  child: _locationCityName == null
-                      ? CircularProgressIndicator(
-                          color: Theme.of(context).colorScheme.onPrimary,
-                        )
-                      : Text(
-                          _locationCityName!,
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                          style: TextStyle(
-                            color: themeColor.onPrimary,
-                            fontSize: 22.sp,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
+                  child: Text(
+                    _locationCityName!,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                      color: themeColor.onPrimary,
+                      fontSize: 22.sp,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
                 ),
               ),
             ],

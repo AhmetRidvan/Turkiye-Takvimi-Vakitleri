@@ -42,7 +42,8 @@ dependencies:
   flutter_bloc: ^9.1.1
   another_flutter_splash_screen: ^1.2.1
   dio: ^5.8.0+1
-  url_launcher: ^6.3.1
+  app_settings: ^6.1.1
+
   flutter_animate: ^4.5.2
 
 dev_dependencies:

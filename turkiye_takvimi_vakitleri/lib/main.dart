@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:turkiye_takvimi_vakitleri/cubits/arka_sayfa_cubit.dart';
 import 'package:turkiye_takvimi_vakitleri/cubits/id_cubit.dart';
 import 'package:turkiye_takvimi_vakitleri/cubits/location_cubit.dart';
 import 'package:turkiye_takvimi_vakitleri/cubits/times_cubit.dart';
@@ -40,6 +41,11 @@ class MyApp extends StatelessWidget {
             BlocProvider(
               create: (context) {
                 return TimesCubit();
+              },
+            ),
+            BlocProvider(
+              create: (context) {
+                return ArkaSayfaCubit();
               },
             ),
           ],
