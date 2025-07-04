@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:math';
-
 import 'package:app_settings/app_settings.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -9,6 +8,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_slider_drawer/flutter_slider_drawer.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:html/parser.dart';
 import 'package:one_clock/one_clock.dart';
 import 'package:turkiye_takvimi_vakitleri/cubits/arka_sayfa_cubit.dart';
 import 'package:turkiye_takvimi_vakitleri/cubits/id_cubit.dart';
@@ -26,6 +26,8 @@ class MainPage extends StatefulWidget {
 }
 
 class _MainPageState extends State<MainPage> {
+ 
+
   final GlobalKey<SliderDrawerState> _sliderDrawerKey =
       GlobalKey<SliderDrawerState>();
   double? latitude;
@@ -33,6 +35,7 @@ class _MainPageState extends State<MainPage> {
   int? id;
   Times? times;
   DateTime todayDateTime = DateTime.now();
+  ArkaSayfaModel? ark;
 
   String? _locationCityName;
   String _day = '';
@@ -136,7 +139,6 @@ class _MainPageState extends State<MainPage> {
         kalanVakitLabel = '${vakitler1[i]['ad']} kalan';
         kalanSure = dt.difference(now);
         aktifVakitAdi = vakitler1[i]['ad'];
-
         return;
       }
     }
@@ -186,7 +188,7 @@ class _MainPageState extends State<MainPage> {
                             style: TextStyle(fontSize: 30.sp),
                           ),
                         ),
-                        backgroundColor: Colors.redAccent,
+                        backgroundColor: Theme.of(context).colorScheme.error,
                       ),
                     );
                   }
@@ -253,7 +255,7 @@ class _MainPageState extends State<MainPage> {
     checkLocation = Timer.periodic(Duration(seconds: 30), (timer) async {
       await _getLocationAndId();
     });
-    
+    context.read<ArkaSayfaCubit>().getArkaSayfa(DateTime.now());
   }
 
   Future<void> openSettings() async {
@@ -265,6 +267,19 @@ class _MainPageState extends State<MainPage> {
     final hour = int.parse(x[0]);
     final minute = int.parse(x[1]);
     return DateTime(2000, 1, 1, hour, minute);
+  }
+
+  Widget drawerButtons(String text, Function func) {
+    return ElevatedButton(
+      onPressed: () {
+        func();
+      },
+      child: Text(
+        text,
+        style: TextStyle(fontSize: 20.sp),
+        textAlign: TextAlign.center,
+      ),
+    );
   }
 
   @override
@@ -298,7 +313,113 @@ class _MainPageState extends State<MainPage> {
               ],
             ),
           ),
-          child: Center(child: Text("asd")),
+          child: Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                drawerButtons('Günün sözü', () {
+                  showDialog(
+                    context: context,
+                    builder: (context) {
+                      final parsed = parse(ark!.veri!.gununSozu);
+                      final parsed2 = parse(ark!.veri!.gununOlayi);
+                      return Dialog(
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color: themeColor.onPrimary,
+                              borderRadius: BorderRadius.circular(22),
+                            ),
+                            child: Padding(
+                              padding: EdgeInsets.all(20.w),
+                              child: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceEvenly,
+                                children: [
+                                  Text(
+                                    parsed.body!.text,
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                      fontSize: 20.sp,
+                                      color: Theme.of(
+                                        context,
+                                      ).colorScheme.primary,
+                                    ),
+                                  ),
+                                  Image.asset(
+                                    width: 300.w,
+                                    'images/divider2.png',
+                                    color: Theme.of(context).colorScheme.error,
+                                  ),
+                                  Text(
+                                    parsed2.body!.text,
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                      fontSize: 20.sp,
+                                      color: Theme.of(
+                                        context,
+                                      ).colorScheme.primary,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                      );
+                    },
+                  );
+                }),
+                drawerButtons('Arka yaprak', () {
+
+                }),
+                drawerButtons('Diğer vakitler', () {
+                  showDialog(
+                    context: context,
+                    builder: (context) {
+                      return SizedBox(
+                        child: Dialog(
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Container(
+                              decoration: BoxDecoration(
+                                color: themeColor.onPrimary,
+                                borderRadius: BorderRadius.circular(22),
+                              ),
+                              child: Padding(
+                                padding: EdgeInsets.all(20.w),
+                                child: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceEvenly,
+                                  children: [
+                                    digerVakitler('Dahve', dahve!),
+                                    digerVakitler('Kerâhet', kerahet!),
+                                    digerVakitler('Asr-ı Sâni', asriSani!),
+                                    digerVakitler('İsfirar', isfirar!),
+                                    digerVakitler('İşa-i Sâni', isaisani!),
+                                    digerVakitler('Gece yarısı', geceYarisi!),
+                                    digerVakitler('Teheccüd', teheccud!),
+                                    digerVakitler('Seher', seher!),
+                                    digerVakitler('Gece yarısı', geceYarisi!),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      );
+                    },
+                  );
+                }),
+                drawerButtons('Hakkımızda', () {}),
+                drawerButtons('Namaz vakitleri\nhakkında açıklama', () {}),
+                drawerButtons('Kıble pusulası', () {}),
+              ],
+            ),
+          ),
         ),
       ),
       child: MultiBlocListener(
@@ -362,6 +483,16 @@ class _MainPageState extends State<MainPage> {
               }
             },
           ),
+          BlocListener<ArkaSayfaCubit, ArkaSayfaModel?>(
+            listener: (BuildContext context, ArkaSayfaModel? state) async {
+              if (state != null) {
+                setState(() {
+                  ark = state;
+                });
+              }
+            },
+          ),
+
           BlocListener<IdCubit, IdModel?>(
             listener: (BuildContext context, IdModel? state) async {
               if (state != null) {
@@ -502,6 +633,7 @@ class _MainPageState extends State<MainPage> {
                           'images/divider2.png',
                           color: Theme.of(context).colorScheme.primary,
                         ),
+
                         SizedBox(height: 2.5.h),
                         Column(
                           children: [
@@ -569,6 +701,39 @@ class _MainPageState extends State<MainPage> {
               : Center(child: CircularProgressIndicator()),
         ),
       ),
+    );
+  }
+
+  Widget digerVakitler(String text, String text2) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      children: [
+        Expanded(
+          child: Text(
+            '$text',
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              fontSize: 20.sp,
+              color: Theme.of(context).colorScheme.primary,
+            ),
+          ),
+        ),
+        Icon(
+          Icons.arrow_forward_sharp,
+          size: 25.w,
+          color: Theme.of(context).colorScheme.error,
+        ),
+        Expanded(
+          child: Text(
+            '$text2',
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              fontSize: 20.sp,
+              color: Theme.of(context).colorScheme.primary,
+            ),
+          ),
+        ),
+      ],
     );
   }
 
