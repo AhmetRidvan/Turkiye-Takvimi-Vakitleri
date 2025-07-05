@@ -48,6 +48,7 @@ dependencies:
   animated_toggle_switch: ^0.8.5
   flex_color_picker: ^3.7.1
   shared_preferences: ^2.5.3
+  omni_datetime_picker: ^2.1.1
 
   flutter_animate: ^4.5.2
 

@@ -43,6 +43,7 @@ class MyApp extends StatelessWidget {
                 return IdCubit();
               },
             ),
+
             BlocProvider(
               create: (context) {
                 return TimesCubit();

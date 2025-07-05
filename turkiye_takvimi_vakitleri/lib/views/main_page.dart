@@ -22,6 +22,7 @@ import 'package:turkiye_takvimi_vakitleri/cubits/times_cubit.dart';
 import 'package:turkiye_takvimi_vakitleri/models/arka_sayfa_model.dart';
 import 'package:turkiye_takvimi_vakitleri/models/id_model.dart';
 import 'package:turkiye_takvimi_vakitleri/models/time_model.dart';
+import 'package:turkiye_takvimi_vakitleri/views/arka_sayfa_page.dart';
 
 class MainPage extends StatefulWidget {
   const MainPage({super.key});
@@ -379,7 +380,15 @@ class _MainPageState extends State<MainPage> {
                     },
                   );
                 }),
-                drawerButtons('Arka yaprak', () {}),
+                drawerButtons('Arka yaprak', () {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) {
+                        return ArkaSayfaPage();
+                      },
+                    ),
+                  );
+                }),
                 drawerButtons('Diğer vakitler', () {
                   showDialog(
                     context: context,
