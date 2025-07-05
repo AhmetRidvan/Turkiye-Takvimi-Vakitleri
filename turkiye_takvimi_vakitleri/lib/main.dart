@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:turkiye_takvimi_vakitleri/cubits/arka_sayfa_cubit.dart';
 import 'package:turkiye_takvimi_vakitleri/cubits/id_cubit.dart';
 import 'package:turkiye_takvimi_vakitleri/cubits/location_cubit.dart';
+import 'package:turkiye_takvimi_vakitleri/cubits/theme_cubits.dart';
 import 'package:turkiye_takvimi_vakitleri/cubits/times_cubit.dart';
 import 'package:turkiye_takvimi_vakitleri/views/main_page.dart';
 import 'package:another_flutter_splash_screen/another_flutter_splash_screen.dart';
@@ -12,12 +14,15 @@ import 'package:another_flutter_splash_screen/another_flutter_splash_screen.dart
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
-  runApp(MyApp()); //konum reddediliince nolsun LocationCubit
+  final prefs = await SharedPreferences.getInstance();
+  final colorValue = prefs.getInt('theme_color') ?? Colors.red.value;
+  final initialColor = Color(colorValue);
+  runApp(MyApp(initialColor: initialColor));
 }
-// with .w height .h font .sp
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  const MyApp({super.key, required this.initialColor});
+  final Color initialColor;
 
   @override
   Widget build(BuildContext context) {
@@ -45,31 +50,40 @@ class MyApp extends StatelessWidget {
             ),
             BlocProvider(
               create: (context) {
+                return ThemeCubits(initialColor);
+              },
+            ),
+            BlocProvider(
+              create: (context) {
                 return ArkaSayfaCubit();
               },
             ),
           ],
-          child: MaterialApp(
-            theme: ThemeData(colorSchemeSeed: Colors.amber),
-            debugShowCheckedModeBanner: false,
-            home: FlutterSplashScreen.scale(
-              childWidget: SizedBox(
-                height: 100.h,
-                child: Image.asset('images/splash.png'),
-              ),
-              nextScreen: MainPage(),
-              gradient: LinearGradient(
-                begin: Alignment.bottomLeft,
-                end: Alignment.topRight,
-                colors: [
-                  Colors.lightBlueAccent,
-                  Colors.deepOrange,
-                  Colors.pinkAccent,
-                ],
-              ),
-              duration: Duration(seconds: 1),
-              animationDuration: Duration(seconds: 1),
-            ),
+          child: BlocBuilder<ThemeCubits, ThemeData>(
+            builder: (context, state) {
+              return MaterialApp(
+                theme: state,
+                debugShowCheckedModeBanner: false,
+                home: FlutterSplashScreen.scale(
+                  childWidget: SizedBox(
+                    height: 100.h,
+                    child: Image.asset('images/splash.png'),
+                  ),
+                  nextScreen: MainPage(),
+                  gradient: LinearGradient(
+                    begin: Alignment.bottomLeft,
+                    end: Alignment.topRight,
+                    colors: [
+                      Colors.lightBlueAccent,
+                      Colors.deepOrange,
+                      Colors.pinkAccent,
+                    ],
+                  ),
+                  duration: Duration(seconds: 1),
+                  animationDuration: Duration(seconds: 1),
+                ),
+              );
+            },
           ),
         );
       },
