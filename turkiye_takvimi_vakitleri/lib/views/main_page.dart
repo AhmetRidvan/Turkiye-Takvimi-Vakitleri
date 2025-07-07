@@ -23,6 +23,7 @@ import 'package:turkiye_takvimi_vakitleri/models/arka_sayfa_model.dart';
 import 'package:turkiye_takvimi_vakitleri/models/id_model.dart';
 import 'package:turkiye_takvimi_vakitleri/models/time_model.dart';
 import 'package:turkiye_takvimi_vakitleri/views/arka_sayfa_page.dart';
+import 'package:turkiye_takvimi_vakitleri/views/qibla.dart';
 
 class MainPage extends StatefulWidget {
   const MainPage({super.key});
@@ -260,7 +261,7 @@ class _MainPageState extends State<MainPage> {
       });
     });
 
-    checkLocation = Timer.periodic(Duration(seconds: 30), (timer) async {
+    checkLocation = Timer.periodic(Duration(seconds: 60), (timer) async {
       await _getLocationAndId();
     });
     context.read<ArkaSayfaCubit>().getArkaSayfa(DateTime.now());
@@ -553,7 +554,15 @@ class _MainPageState extends State<MainPage> {
                     },
                   );
                 }),
-                drawerButtons('Kıble pusulası', () {}),
+                drawerButtons('Kıble pusulası', () {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) {
+                        return QiblaScreen();
+                      },
+                    ),
+                  );
+                }),
                 drawerButtons('Renk seç', () {
                   showDialog(
                     context: context,

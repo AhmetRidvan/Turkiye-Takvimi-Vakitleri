@@ -69,4 +69,11 @@ class Repo {
     final jsonX = x.data as List; 
     return ArkaSayfaModel.fromJson(jsonX[1]);
   }
+  static Future<ArkaSayfaModel> getArkaSayfa2(DateTime tarih) async {
+    final _url =
+        'https://www.turktakvim.com/JSONservis_takvim.php?baslangic=$tarih&bitis=$tarih&format=json';
+    final x = await Dio().get(_url);
+    final jsonX = x.data as List; 
+    return ArkaSayfaModel.fromJson(jsonX[1]);
+  }
 }

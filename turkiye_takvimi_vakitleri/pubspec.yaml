@@ -38,7 +38,7 @@ dependencies:
   flutter_screenutil: ^5.9.3
   flutter_slider_drawer: ^3.0.2
   one_clock: ^2.0.2
-  geolocator: ^14.0.1
+  geolocator: ^13.0.2
   flutter_bloc: ^9.1.1
   another_flutter_splash_screen: ^1.2.1
   dio: ^5.8.0+1
@@ -48,9 +48,10 @@ dependencies:
   animated_toggle_switch: ^0.8.5
   flex_color_picker: ^3.7.1
   shared_preferences: ^2.5.3
-  omni_datetime_picker: ^2.1.1
-
   flutter_animate: ^4.5.2
+  board_datetime_picker: ^2.8.0
+  flutter_html: ^3.0.0
+  flutter_qiblah: ^3.1.0+1
 
 dev_dependencies:
   flutter_test:
