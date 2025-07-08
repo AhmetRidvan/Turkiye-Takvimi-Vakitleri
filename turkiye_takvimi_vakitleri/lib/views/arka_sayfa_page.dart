@@ -22,6 +22,7 @@ class _ArkaSayfaPageState extends State<ArkaSayfaPage> {
   ArkaSayfaModel? ark;
   var ArkYazi;
   var ArkBaslik;
+  var isimYemek;
 
   @override
   void initState() {
@@ -78,6 +79,7 @@ class _ArkaSayfaPageState extends State<ArkaSayfaPage> {
                 ark = state;
                 ArkYazi = ark!.veri!.arkayuz.yazi;
                 ArkBaslik = ark!.veri!.arkayuz.baslik;
+                isimYemek = ark!.veri!.isimYemek;
               });
             }
           },
@@ -95,7 +97,7 @@ class _ArkaSayfaPageState extends State<ArkaSayfaPage> {
           ),
         ),
         body: ark == null
-            ? CircularProgressIndicator()
+            ? Center(child: CircularProgressIndicator())
             : SafeArea(
                 child: Center(
                   child: SingleChildScrollView(
@@ -124,12 +126,35 @@ class _ArkaSayfaPageState extends State<ArkaSayfaPage> {
                               },
                             ),
                             Divider(
-                              thickness: 8.w,
+                              thickness: 2.w,
                               color: Theme.of(context).colorScheme.primary,
                               radius: BorderRadius.circular(300.w),
                             ),
                             Html(
                               data: ArkYazi,
+                              style: {
+                                // "body" seçicisi, HTML içeriğinin tamamına stil uygular.
+                                "body": Style(
+                                  // Yazı boyutunu buradan ayarlayabilirsiniz.
+                                  // flutter_screenutil kullanıyorsanız .sp uzantısını kullanabilirsiniz.
+                                  fontSize: FontSize(20.sp),
+
+                                  // Diğer stil ayarları
+                                  fontWeight: FontWeight.bold,
+                                  color: Theme.of(context).colorScheme.primary,
+                                  textAlign: TextAlign.start,
+                                ),
+
+                                // İsterseniz sadece belirli etiketlere de (örn: paragraflara) stil verebilirsiniz.
+                              },
+                            ),
+                            Divider(
+                              thickness: 2.w,
+                              color: Theme.of(context).colorScheme.primary,
+                              radius: BorderRadius.circular(300.w),
+                            ),
+                            Html(
+                              data: isimYemek,
                               style: {
                                 // "body" seçicisi, HTML içeriğinin tamamına stil uygular.
                                 "body": Style(

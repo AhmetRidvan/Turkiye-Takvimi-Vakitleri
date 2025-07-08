@@ -47,8 +47,8 @@ class QiblahCompassWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     final compassSvg = SizedBox(
       child: Image.asset(
-        width: 320.w,
-        height: 320.h,
+        width: 350.w,
+        height: 350.h,
         'images/kible.png',
         color: Theme.of(context).colorScheme.primary,
       ),
@@ -79,6 +79,14 @@ class QiblahCompassWidget extends StatelessWidget {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
+                  Text(
+                    'Kıble açısı 340',
+                    style: TextStyle(
+                      fontSize: 20.sp,
+                      color: Theme.of(context).colorScheme.error,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
                   Stack(
                     alignment: Alignment.center,
                     children: [
@@ -93,30 +101,22 @@ class QiblahCompassWidget extends StatelessWidget {
                     ],
                   ),
                   Text(
-                    'Kıble açısı ${qiblaAngle.toString()}',
+                    'Anlık açınız ${qiblaAngle.toString()}',
                     style: TextStyle(
                       fontSize: 20.sp,
                       color: Theme.of(context).colorScheme.error,
                     ),
                     textAlign: TextAlign.center,
                   ),
+                  SizedBox(height: 9.h),
 
                   Text(
-                    'Dereceler fotoğraftaki pozisyona göre baz alınmıştır.',
+                    '180 Derece zemine paralel-yatay olarak tutunuz.',
                     style: TextStyle(
                       fontSize: 20.sp,
                       color: Theme.of(context).colorScheme.error,
                     ),
                     textAlign: TextAlign.center,
-                  ),
-                  SizedBox(height: 10.h),
-                  ClipRRect(
-                    borderRadius: BorderRadiusGeometry.circular(22.w),
-                    child: Image.asset(
-                      'images/phone.jpg',
-                      width: 200.w,
-                      fit: BoxFit.fill,
-                    ),
                   ),
                 ],
               ),
