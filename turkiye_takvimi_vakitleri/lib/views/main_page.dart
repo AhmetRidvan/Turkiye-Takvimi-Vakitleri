@@ -10,6 +10,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_slider_drawer/flutter_slider_drawer.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:home_widget/home_widget.dart';
 import 'package:html/parser.dart';
 import 'package:one_clock/one_clock.dart';
 import 'package:pinch_zoom/pinch_zoom.dart';
@@ -265,6 +266,23 @@ class _MainPageState extends State<MainPage> {
       await _getLocationAndId();
     });
     context.read<ArkaSayfaCubit>().getArkaSayfa(DateTime.now());
+  }
+
+  Future<void> homeWidgetUpdate() async {
+    await HomeWidget.saveWidgetData('_imsak', imsak);
+    await HomeWidget.saveWidgetData('_sabah', sabah);
+    await HomeWidget.saveWidgetData('_gunes', gunes);
+    await HomeWidget.saveWidgetData('_ogle', ogle);
+    await HomeWidget.saveWidgetData('_ikindi', ikindi);
+    await HomeWidget.saveWidgetData('_aksam', aksam);
+    await HomeWidget.saveWidgetData('_yatsi', yatsi);
+
+    await HomeWidget.updateWidget(
+      // this name should be same as the class name in java or kotlin
+      name: 'HomeScreenWidgetProvider',
+      androidName: 'HomeScreenWidgetProvider',
+      iOSName: 'HomeScreenWidgetProvider',
+    );
   }
 
   Future<void> openSettings() async {
@@ -931,6 +949,12 @@ class _MainPageState extends State<MainPage> {
                                   ),
                                 ),
                               ],
+                            ),
+                            ElevatedButton(
+                              onPressed: () async {
+                                await homeWidgetUpdate();
+                              },
+                              child: Text('asd'),
                             ),
                           ],
                         ),

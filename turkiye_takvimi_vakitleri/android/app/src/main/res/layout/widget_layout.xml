@@ -1,0 +1,95 @@
+<!-- widget_layout.xml -->
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/widget_root"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/widget_background"
+        android:clipChildren="false"
+        android:elevation="4dp"
+        android:padding="8dp">
+
+        <LinearLayout
+            android:id="@+id/layout_times"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center_horizontal"
+            android:layout_centerInParent="true">
+
+            <TextView
+                android:id="@+id/tv_imsak"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="İmsak: --:--"
+                android:textColor="@android:color/white"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:padding="2dp"/>
+
+            <TextView
+                android:id="@+id/tv_sabah"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Sabah: --:--"
+                android:textColor="@android:color/white"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:padding="2dp"/>    
+
+            <TextView
+                android:id="@+id/tv_gunes"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Güneş: --:--"
+                android:textColor="@android:color/white"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:padding="2dp"/>
+
+            <TextView
+                android:id="@+id/tv_ogle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Öğle: --:--"
+                android:textColor="@android:color/white"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:padding="2dp"/>
+
+            <TextView
+                android:id="@+id/tv_ikindi"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="İkindi: --:--"
+                android:textColor="@android:color/white"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:padding="2dp"/>
+
+            <TextView
+                android:id="@+id/tv_aksam"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Akşam: --:--"
+                android:textColor="@android:color/white"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:padding="2dp"/>
+
+            <TextView
+                android:id="@+id/tv_yatsi"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Yatsı: --:--"
+                android:textColor="@android:color/white"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:padding="2dp"/>
+        </LinearLayout>
+    </RelativeLayout>
+</FrameLayout>
