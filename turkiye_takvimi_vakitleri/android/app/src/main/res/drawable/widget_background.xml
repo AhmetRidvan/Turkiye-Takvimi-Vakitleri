@@ -1,5 +1,8 @@
-<!--  this is the code for radius and color of the background -->
-<shape xmlns:android="http://schemas.android.com/apk/res/android">
-    <solid android:color="#03045e" />
-    <corners android:radius="12dp" />
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle">
+    <gradient
+        android:startColor="#ff0000"
+        android:endColor="#ff0000"
+        android:angle="90"/>
+    <corners android:radius="30dp"/>
 </shape>

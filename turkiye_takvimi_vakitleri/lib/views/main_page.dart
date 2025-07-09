@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_slider_drawer/flutter_slider_drawer.dart';
 import 'package:geolocator/geolocator.dart';
@@ -731,6 +732,7 @@ class _MainPageState extends State<MainPage> {
                   _month = turkishMonths[todayDateTime.month - 1];
                   _year = todayDateTime.year.toString();
                   _day2 = turkishDays[todayDateTime.weekday - 1];
+                  homeWidgetUpdate();
                 });
               }
             },
@@ -769,7 +771,6 @@ class _MainPageState extends State<MainPage> {
                 setState(() {
                   _locationCityName = c.cityNameTR!;
                   id = int.parse(c.iD!);
-
                   context.read<TimesCubit>().getTimes(id: id!);
                 });
               }
@@ -949,12 +950,6 @@ class _MainPageState extends State<MainPage> {
                                   ),
                                 ),
                               ],
-                            ),
-                            ElevatedButton(
-                              onPressed: () async {
-                                await homeWidgetUpdate();
-                              },
-                              child: Text('asd'),
                             ),
                           ],
                         ),
