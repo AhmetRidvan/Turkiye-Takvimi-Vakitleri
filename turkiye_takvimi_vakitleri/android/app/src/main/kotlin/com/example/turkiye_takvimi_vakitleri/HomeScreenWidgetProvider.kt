@@ -32,6 +32,8 @@ class HomeScreenWidgetProvider : HomeWidgetProvider() {
                 val ikindi = widgetData.getString("_ikindi", "İkindi") ?: "İkindi"
                 val aksam = widgetData.getString("_aksam", "Akşam") ?: "Akşam"
                 val yatsi = widgetData.getString("_yatsi", "Yatsı") ?: "Yatsı"
+                val gün = widgetData.getString("_gununOlayi", "Günün olayı") ?: "Günün olayı"
+                val gün2 = widgetData.getString("_gununSozu", "Günün sözü") ?: "Günün sözü"
 
                 // TextView'lere verileri yerleştir
                 setTextViewText(R.id.tv_imsak, "İmsak: $imsak")
@@ -41,6 +43,8 @@ class HomeScreenWidgetProvider : HomeWidgetProvider() {
                 setTextViewText(R.id.tv_ikindi, "İkindi: $ikindi")
                 setTextViewText(R.id.tv_aksam, "Akşam: $aksam")
                 setTextViewText(R.id.tv_yatsi, "Yatsı: $yatsi")
+                setTextViewText(R.id.tv_gununOlayi, "Günün olayı: $gün")
+                setTextViewText(R.id.tv_gununSozu, "Günün sözü: $gün2")
             }
 
             appWidgetManager.updateAppWidget(widgetId, views)

@@ -270,6 +270,11 @@ class _MainPageState extends State<MainPage> {
   }
 
   Future<void> homeWidgetUpdate() async {
+    String x = parse(ark!.veri!.gununOlayi).body!.text;
+    print(x);
+     String y = parse(ark!.veri!.gununSozu).body!.text;
+    print(y);
+
     await HomeWidget.saveWidgetData('_imsak', imsak);
     await HomeWidget.saveWidgetData('_sabah', sabah);
     await HomeWidget.saveWidgetData('_gunes', gunes);
@@ -277,9 +282,13 @@ class _MainPageState extends State<MainPage> {
     await HomeWidget.saveWidgetData('_ikindi', ikindi);
     await HomeWidget.saveWidgetData('_aksam', aksam);
     await HomeWidget.saveWidgetData('_yatsi', yatsi);
+    await HomeWidget.saveWidgetData(
+      '_gununOlayi',
+      x,
+    );
+    await HomeWidget.saveWidgetData('_gununSozu', y);
 
     await HomeWidget.updateWidget(
-      // this name should be same as the class name in java or kotlin
       name: 'HomeScreenWidgetProvider',
       androidName: 'HomeScreenWidgetProvider',
       iOSName: 'HomeScreenWidgetProvider',
@@ -297,15 +306,28 @@ class _MainPageState extends State<MainPage> {
     return DateTime(2000, 1, 1, hour, minute);
   }
 
-  Widget drawerButtons(String text, Function func) {
+  Widget drawerButtons(IconData icon, String text, Function func) {
     return ElevatedButton(
       onPressed: () {
         func();
       },
-      child: Text(
-        text,
-        style: TextStyle(fontSize: 20.sp),
-        textAlign: TextAlign.center,
+      child: Row(
+        mainAxisSize: MainAxisSize.max,
+
+        children: [
+          Expanded(
+            flex: 1,
+            child: Icon(icon, color: Theme.of(context).colorScheme.primary),
+          ),
+          Expanded(
+            flex: 5,
+            child: Text(
+              text,
+              style: TextStyle(fontSize: 20.sp),
+              textAlign: TextAlign.center,
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -345,7 +367,7 @@ class _MainPageState extends State<MainPage> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                drawerButtons('Günün sözü', () {
+                drawerButtons(Icons.data_array_rounded, 'Günün sözü', () {
                   showDialog(
                     context: context,
                     builder: (context) {
@@ -400,7 +422,7 @@ class _MainPageState extends State<MainPage> {
                     },
                   );
                 }),
-                drawerButtons('Arka yaprak', () {
+                drawerButtons(Icons.padding_outlined, 'Arka yaprak', () {
                   Navigator.of(context).push(
                     MaterialPageRoute(
                       builder: (context) {
@@ -409,82 +431,86 @@ class _MainPageState extends State<MainPage> {
                     ),
                   );
                 }),
-                drawerButtons('Diğer vakitler', () {
-                  showDialog(
-                    context: context,
-                    builder: (context) {
-                      return SizedBox(
-                        child: Dialog(
-                          child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Container(
-                              decoration: BoxDecoration(
-                                color: themeColor.onPrimary,
-                                borderRadius: BorderRadius.circular(22),
-                              ),
-                              child: Padding(
-                                padding: EdgeInsets.all(20.w),
-                                child: Column(
-                                  mainAxisSize: MainAxisSize.min,
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceEvenly,
-                                  children: [
-                                    digerVakitler(
-                                      context,
-                                      'Dahve',
-                                      dahve ?? 'Bilinmiyor',
-                                    ),
-                                    digerVakitler(
-                                      context,
-                                      'Kerâhet',
-                                      kerahet ?? 'Bilinmiyor',
-                                    ),
-                                    digerVakitler(
-                                      context,
-                                      'Asr-ı Sâni',
-                                      asriSani ?? 'Bilinmiyor',
-                                    ),
-                                    digerVakitler(
-                                      context,
-                                      'İsfirar',
-                                      isfirar ?? 'Bilinmiyor',
-                                    ),
-                                    digerVakitler(
-                                      context,
-                                      'İşa-i Sâni',
-                                      isaisani ?? 'Bilinmiyor',
-                                    ),
-                                    digerVakitler(
-                                      context,
-                                      'Gece yarısı',
-                                      geceYarisi ?? 'Bilinmiyor',
-                                    ),
-                                    digerVakitler(
-                                      context,
-                                      'Teheccüd',
-                                      teheccud ?? 'Bilinmiyor',
-                                    ),
-                                    digerVakitler(
-                                      context,
-                                      'Seher',
-                                      seher ?? 'Bilinmiyor',
-                                    ),
-                                    digerVakitler(
-                                      context,
-                                      'Gece yarısı',
-                                      geceYarisi ?? 'Bilinmiyor',
-                                    ),
-                                  ],
+                drawerButtons(
+                  Icons.insert_chart_outlined_sharp,
+                  'Diğer vakitler',
+                  () {
+                    showDialog(
+                      context: context,
+                      builder: (context) {
+                        return SizedBox(
+                          child: Dialog(
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  color: themeColor.onPrimary,
+                                  borderRadius: BorderRadius.circular(22),
+                                ),
+                                child: Padding(
+                                  padding: EdgeInsets.all(20.w),
+                                  child: Column(
+                                    mainAxisSize: MainAxisSize.min,
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceEvenly,
+                                    children: [
+                                      digerVakitler(
+                                        context,
+                                        'Dahve',
+                                        dahve ?? 'Bilinmiyor',
+                                      ),
+                                      digerVakitler(
+                                        context,
+                                        'Kerâhet',
+                                        kerahet ?? 'Bilinmiyor',
+                                      ),
+                                      digerVakitler(
+                                        context,
+                                        'Asr-ı Sâni',
+                                        asriSani ?? 'Bilinmiyor',
+                                      ),
+                                      digerVakitler(
+                                        context,
+                                        'İsfirar',
+                                        isfirar ?? 'Bilinmiyor',
+                                      ),
+                                      digerVakitler(
+                                        context,
+                                        'İşa-i Sâni',
+                                        isaisani ?? 'Bilinmiyor',
+                                      ),
+                                      digerVakitler(
+                                        context,
+                                        'Gece yarısı',
+                                        geceYarisi ?? 'Bilinmiyor',
+                                      ),
+                                      digerVakitler(
+                                        context,
+                                        'Teheccüd',
+                                        teheccud ?? 'Bilinmiyor',
+                                      ),
+                                      digerVakitler(
+                                        context,
+                                        'Seher',
+                                        seher ?? 'Bilinmiyor',
+                                      ),
+                                      digerVakitler(
+                                        context,
+                                        'Gece yarısı',
+                                        geceYarisi ?? 'Bilinmiyor',
+                                      ),
+                                    ],
+                                  ),
                                 ),
                               ),
                             ),
                           ),
-                        ),
-                      );
-                    },
-                  );
-                }),
-                drawerButtons('Hakkımızda', () {
+                        );
+                      },
+                    );
+                  },
+                ),
+                drawerButtons(Icons.co_present_outlined, 'Hakkımızda', () {
                   DateTime d1 = DateTime.now();
                   int ex = d1.year - 1981;
                   String text =
@@ -528,7 +554,7 @@ class _MainPageState extends State<MainPage> {
                                         ).colorScheme.error,
                                       ),
                                       Text(
-                                        ' Adresimiz: İhlas Holding Merkez Binası (İhlas Plaza) \nTakvim Hazırlama Servisi, 29 Ekim Caddesi No: 11/A 34197 Yenibosna - İstanbul Tel: 0212 454 21 60 E-mail: bilgi@takvimsiparisi.com',
+                                        'Adresimiz: İhlas Holding Merkez Binası (İhlas Plaza) \nTakvim Hazırlama Servisi, 29 Ekim Caddesi No: 11/A 34197 Yenibosna - İstanbul Tel: 0212 454 21 60 E-mail: bilgi@takvimsiparisi.com',
                                         style: TextStyle(
                                           fontWeight: FontWeight.bold,
                                           fontSize: 15.sp,
@@ -548,7 +574,7 @@ class _MainPageState extends State<MainPage> {
                     },
                   );
                 }),
-                drawerButtons('Namaz vakitleri\nhakkında açıklama', () {
+                drawerButtons(Icons.timer_sharp, 'Vakitler açıklaması', () {
                   showDialog(
                     context: context,
                     builder: (context) {
@@ -573,7 +599,7 @@ class _MainPageState extends State<MainPage> {
                     },
                   );
                 }),
-                drawerButtons('Kıble pusulası', () {
+                drawerButtons(Icons.location_on_outlined, 'Kıble pusulası', () {
                   Navigator.of(context).push(
                     MaterialPageRoute(
                       builder: (context) {
@@ -582,103 +608,108 @@ class _MainPageState extends State<MainPage> {
                     ),
                   );
                 }),
-                drawerButtons('Renk seç', () {
+                drawerButtons(Icons.color_lens_outlined, 'Renk seç', () {
                   showDialog(
                     context: context,
                     builder: (context) {
                       return Dialog(
                         child: SingleChildScrollView(
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            children: [
-                              // Show the color picker in sized box in a raised card.
-                              SizedBox(
-                                width: double.infinity,
-                                child: Padding(
-                                  padding: const EdgeInsets.all(6),
-                                  child: Card(
-                                    elevation: 2,
-                                    child: ColorPicker(
-                                      pickersEnabled: {
-                                        ColorPickerType.wheel: false,
-                                        ColorPickerType.accent: false,
-                                        ColorPickerType.both: false,
-                                        ColorPickerType.bw: false,
-                                        ColorPickerType.custom: false,
-                                        ColorPickerType.customSecondary: false,
-                                        ColorPickerType.primary: false,
-                                      },
-                                      color: color65,
+                          child: Padding(
+                            padding: EdgeInsets.all(20.0.w),
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: [
+                                // Show the color picker in sized box in a raised card.
+                                SizedBox(
+                                  width: double.infinity,
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(6),
+                                    child: Card(
+                                      elevation: 2,
+                                      child: ColorPicker(
+                                        pickersEnabled: {
+                                          ColorPickerType.wheel: false,
+                                          ColorPickerType.accent: false,
+                                          ColorPickerType.both: false,
+                                          ColorPickerType.bw: false,
+                                          ColorPickerType.custom: false,
+                                          ColorPickerType.customSecondary:
+                                              false,
+                                          ColorPickerType.primary: false,
+                                        },
+                                        color: color65,
 
-                                      onColorChanged: (Color color2) {
-                                        setState(() => color65 = color2);
-                                        context.read<ThemeCubits>().changeColor(
-                                          color65,
-                                        );
-                                      },
+                                        onColorChanged: (Color color2) {
+                                          setState(() => color65 = color2);
+                                          context
+                                              .read<ThemeCubits>()
+                                              .changeColor(color65);
+                                        },
 
-                                      width: 44.w,
-                                      height: 44.h,
-                                      borderRadius: 22.w,
-                                      heading: Text(
-                                        'Rengi seçiniz',
-                                        style: TextStyle(fontSize: 25.sp),
-                                      ),
-                                      subheading: Text(
-                                        'Opaklık seçiniz',
-                                        style: TextStyle(fontSize: 25.sp),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                              TextButton(
-                                onPressed: () {
-                                  Navigator.of(context).pop();
-                                },
-                                child: Text(
-                                  'Tamam',
-                                  style: TextStyle(fontSize: 30.sp),
-                                ),
-                              ),
-                              SizedBox(
-                                width: double.infinity,
-                                child: Padding(
-                                  padding: const EdgeInsets.all(6),
-                                  child: Card(
-                                    elevation: 2,
-                                    child: ColorPicker(
-                                      pickersEnabled: {
-                                        ColorPickerType.wheel: true,
-                                        ColorPickerType.accent: false,
-                                        ColorPickerType.both: false,
-                                        ColorPickerType.bw: false,
-                                        ColorPickerType.custom: false,
-                                        ColorPickerType.customSecondary: false,
-                                        ColorPickerType.primary: false,
-                                      },
-                                      color: color65,
-
-                                      onColorChanged: (Color color2) {
-                                        setState(() => color65 = color2);
-                                        context.read<ThemeCubits>().changeColor(
-                                          color65,
-                                        );
-                                      },
-
-                                      width: 44.w,
-                                      height: 44.h,
-                                      borderRadius: 22.w,
-                                      heading: Text(
-                                        '2. Opsiyon',
-                                        style: TextStyle(fontSize: 25.sp),
+                                        width: 44.w,
+                                        height: 44.h,
+                                        borderRadius: 22.w,
+                                        heading: Text(
+                                          'Rengi seçiniz',
+                                          style: TextStyle(fontSize: 25.sp),
+                                        ),
+                                        subheading: Text(
+                                          'Opaklık seçiniz',
+                                          style: TextStyle(fontSize: 25.sp),
+                                        ),
                                       ),
                                     ),
                                   ),
                                 ),
-                              ),
-                            ],
+                                TextButton(
+                                  onPressed: () {
+                                    Navigator.of(context).pop();
+                                  },
+                                  child: Text(
+                                    'Tamam',
+                                    style: TextStyle(fontSize: 30.sp),
+                                  ),
+                                ),
+                                SizedBox(
+                                  width: double.infinity,
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(6),
+                                    child: Card(
+                                      elevation: 2,
+                                      child: ColorPicker(
+                                        pickersEnabled: {
+                                          ColorPickerType.wheel: true,
+                                          ColorPickerType.accent: false,
+                                          ColorPickerType.both: false,
+                                          ColorPickerType.bw: false,
+                                          ColorPickerType.custom: false,
+                                          ColorPickerType.customSecondary:
+                                              false,
+                                          ColorPickerType.primary: false,
+                                        },
+                                        color: color65,
+
+                                        onColorChanged: (Color color2) {
+                                          setState(() => color65 = color2);
+                                          context
+                                              .read<ThemeCubits>()
+                                              .changeColor(color65);
+                                        },
+
+                                        width: 44.w,
+                                        height: 44.h,
+                                        borderRadius: 22.w,
+                                        heading: Text(
+                                          '2. Opsiyon',
+                                          style: TextStyle(fontSize: 25.sp),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
                         ),
                       );

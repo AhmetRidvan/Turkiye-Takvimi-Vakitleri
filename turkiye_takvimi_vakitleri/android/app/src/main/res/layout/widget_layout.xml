@@ -1,4 +1,3 @@
-<!-- widget_layout.xml -->
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/widget_root"
     android:layout_width="match_parent"
@@ -9,9 +8,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/widget_background"
-        android:clipChildren="false"
-        android:elevation="4dp"
-        android:padding="8dp">
+        android:padding="8dp"
+        android:clipChildren="false">
 
         <LinearLayout
             android:id="@+id/layout_times"
@@ -90,6 +88,26 @@
                 android:textSize="16sp"
                 android:textStyle="bold"
                 android:padding="2dp"/>
+
+            <TextView
+                android:id="@+id/tv_gununOlayi"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Günün olayı: --:--"
+                android:textColor="@android:color/white"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:padding="2dp"/>
+
+            <TextView
+                android:id="@+id/tv_gununSozu"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Günün sözü: --:--"
+                android:textColor="@android:color/white"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:padding="2dp"/>        
         </LinearLayout>
     </RelativeLayout>
 </FrameLayout>
