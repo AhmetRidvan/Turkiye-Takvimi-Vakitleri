@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 import 'dart:math';
 import 'package:animated_toggle_switch/animated_toggle_switch.dart';
 import 'package:app_settings/app_settings.dart';
@@ -272,7 +273,7 @@ class _MainPageState extends State<MainPage> {
   Future<void> homeWidgetUpdate() async {
     String x = parse(ark!.veri!.gununOlayi).body!.text;
     print(x);
-     String y = parse(ark!.veri!.gununSozu).body!.text;
+    String y = parse(ark!.veri!.gununSozu).body!.text;
     print(y);
 
     await HomeWidget.saveWidgetData('_imsak', imsak);
@@ -282,10 +283,7 @@ class _MainPageState extends State<MainPage> {
     await HomeWidget.saveWidgetData('_ikindi', ikindi);
     await HomeWidget.saveWidgetData('_aksam', aksam);
     await HomeWidget.saveWidgetData('_yatsi', yatsi);
-    await HomeWidget.saveWidgetData(
-      '_gununOlayi',
-      x,
-    );
+    await HomeWidget.saveWidgetData('_gununOlayi', x);
     await HomeWidget.saveWidgetData('_gununSozu', y);
 
     await HomeWidget.updateWidget(
@@ -763,7 +761,7 @@ class _MainPageState extends State<MainPage> {
                   _month = turkishMonths[todayDateTime.month - 1];
                   _year = todayDateTime.year.toString();
                   _day2 = turkishDays[todayDateTime.weekday - 1];
-                  homeWidgetUpdate();
+                  Platform.isAndroid ? homeWidgetUpdate() : null;
                 });
               }
             },
