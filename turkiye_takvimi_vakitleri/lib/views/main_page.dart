@@ -811,7 +811,12 @@ class _MainPageState extends State<MainPage> {
               ? Stack(
                   fit: StackFit.expand,
                   children: [
-                    Image.asset('images/background.png', fit: BoxFit.fill),
+                    Image.asset(
+                      'images/background.png',
+                      color: Theme.of(context).colorScheme.primary,
+                      colorBlendMode: BlendMode.colorBurn,
+                      fit: BoxFit.fill,
+                    ),
                     customDrawerButton(),
                     customLocationDrawerButton(),
                     Column(
