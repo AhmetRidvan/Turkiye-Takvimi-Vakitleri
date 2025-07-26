@@ -15,8 +15,8 @@ import 'package:geolocator/geolocator.dart';
 import 'package:home_widget/home_widget.dart';
 import 'package:html/parser.dart';
 import 'package:one_clock/one_clock.dart';
-import 'package:pinch_zoom/pinch_zoom.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
 import 'package:turkiye_takvimi_vakitleri/cubits/arka_sayfa_cubit.dart';
 import 'package:turkiye_takvimi_vakitleri/cubits/id_cubit.dart';
 import 'package:turkiye_takvimi_vakitleri/cubits/location_cubit.dart';
@@ -572,31 +572,25 @@ class _MainPageState extends State<MainPage> {
                     },
                   );
                 }),
-                drawerButtons(Icons.timer_sharp, 'Vakitler açıklaması', () {
-                  showDialog(
-                    context: context,
-                    builder: (context) {
-                      return Dialog(
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: [
-                            PinchZoom(
-                              child: Image.asset('images/aa.jpeg'),
-                              maxScale: 2.5,
-                              onZoomStart: () {
-                                print('Start zooming');
-                              },
-                              onZoomEnd: () {
-                                print('Stop zooming');
-                              },
+                drawerButtons(
+                  Icons.timer_sharp,
+                  'Vakitlerle ilgili\naçıklama',
+                  () {
+                    showDialog(
+                      context: context,
+                      builder: (context) {
+                        return Dialog(
+                          child: ClipRRect(
+                            borderRadius: BorderRadiusGeometry.circular(30),
+                            child: SfPdfViewer.network(
+                              'https://www.turktakvim.com/pdf/MuhimAciklama.TT.pdf',
                             ),
-                          ],
-                        ),
-                      );
-                    },
-                  );
-                }),
+                          ),
+                        );
+                      },
+                    );
+                  },
+                ),
                 drawerButtons(Icons.location_on_outlined, 'Kıble pusulası', () {
                   Navigator.of(context).push(
                     MaterialPageRoute(
