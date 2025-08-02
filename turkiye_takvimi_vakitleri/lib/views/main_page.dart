@@ -293,6 +293,35 @@ class _MainPageState extends State<MainPage> {
     );
   }
 
+  Future<void> homeWidgetUpdateIOS() async {
+  // HTML'den metin ayıklama
+  final String gununOlayi = parse(ark!.veri!.gununOlayi).body!.text;
+  final String gununSozu = parse(ark!.veri!.gununSozu).body!.text;
+
+  // App Group ID ve Widget adı tanımlanıyor
+  const String appGroupId = 'group.turkiyeTakvimiWidget';
+  const String iosWidgetName = 'turkiye';
+
+  // App Group üzerinden veri iletimi için hazırlık
+  await HomeWidget.setAppGroupId(appGroupId);
+
+  // Vakit bilgileri widget’a kaydediliyor
+  await HomeWidget.saveWidgetData('_imsak', imsak);
+  await HomeWidget.saveWidgetData('_sabah', sabah);
+  await HomeWidget.saveWidgetData('_gunes', gunes);
+  await HomeWidget.saveWidgetData('_ogle', ogle);
+  await HomeWidget.saveWidgetData('_ikindi', ikindi);
+  await HomeWidget.saveWidgetData('_aksam', aksam);
+  await HomeWidget.saveWidgetData('_yatsi', yatsi);
+
+ 
+
+
+  // Widget’ın kendini güncellemesi tetikleniyor
+  await HomeWidget.updateWidget(iOSName: iosWidgetName);
+}
+
+
   Future<void> openSettings() async {
     await AppSettings.openAppSettings();
   }
@@ -756,6 +785,7 @@ class _MainPageState extends State<MainPage> {
                   _year = todayDateTime.year.toString();
                   _day2 = turkishDays[todayDateTime.weekday - 1];
                   Platform.isAndroid ? homeWidgetUpdate() : null;
+                  Platform.isIOS ? homeWidgetUpdateIOS() : null;
                 });
               }
             },

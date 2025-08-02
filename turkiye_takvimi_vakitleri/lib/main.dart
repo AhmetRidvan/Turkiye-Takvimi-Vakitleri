@@ -18,7 +18,7 @@ void main() async {
   final prefs = await SharedPreferences.getInstance();
   final colorValue = prefs.getInt('theme_color') ?? Colors.red.value;
   final initialColor = Color(colorValue);
-  runApp(MyApp(initialColor: initialColor));
+  runApp(MyApp(initialColor: initialColor)); 
 }
 
 class MyApp extends StatelessWidget {
