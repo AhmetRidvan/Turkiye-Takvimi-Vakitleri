@@ -328,6 +328,35 @@ class _MainPageState extends State<MainPage> {
     return DateTime(2000, 1, 1, hour, minute);
   }
 
+  DateTime? geceninUcBirVakti() {
+    if (aksam == null || imsak == null) return null;
+    // Akşam ve imsak saatlerini bugünün ve yarının tarihleriyle oluştur
+    final now = DateTime.now();
+    final aksamDt = DateTime(
+      now.year,
+      now.month,
+      now.day,
+      int.parse(aksam!.split(':')[0]),
+      int.parse(aksam!.split(':')[1]),
+    );
+    final imsakDt = DateTime(
+      now.year,
+      now.month,
+      now.day + 1,
+      int.parse(imsak!.split(':')[0]),
+      int.parse(imsak!.split(':')[1]),
+    );
+    final fark = imsakDt.difference(aksamDt);
+    final ucBir = Duration(seconds: (fark.inSeconds / 3).round());
+    return aksamDt.add(ucBir);
+  }
+
+  String? geceninUcBirString() {
+    final dt = geceninUcBirVakti();
+    if (dt == null) return 'Bilinmiyor';
+    return '${dt.hour.toString().padLeft(2, '0')}:${dt.minute.toString().padLeft(2, '0')}';
+  }
+
   Widget drawerButtons(IconData icon, String text, Function func) {
     return ElevatedButton(
       onPressed: () {
@@ -483,6 +512,11 @@ class _MainPageState extends State<MainPage> {
                                       ),
                                       digerVakitler(
                                         context,
+                                        'Kıble',
+                                        kible ?? 'Bilinmiyor',
+                                      ),
+                                      digerVakitler(
+                                        context,
                                         'Kerâhet',
                                         kerahet ?? 'Bilinmiyor',
                                       ),
@@ -498,6 +532,12 @@ class _MainPageState extends State<MainPage> {
                                       ),
                                       digerVakitler(
                                         context,
+                                        'İştibâk',
+                                        istibak ?? 'Bilinmiyor',
+                                      ),
+
+                                      digerVakitler(
+                                        context,
                                         'İşa-i Sâni',
                                         isaisani ?? 'Bilinmiyor',
                                       ),
@@ -508,6 +548,12 @@ class _MainPageState extends State<MainPage> {
                                       ),
                                       digerVakitler(
                                         context,
+                                        'Gecenin 3\'te biri',
+                                        geceninUcBirString(),
+                                      ),
+
+                                      digerVakitler(
+                                        context,
                                         'Teheccüd',
                                         teheccud ?? 'Bilinmiyor',
                                       ),
@@ -515,11 +561,6 @@ class _MainPageState extends State<MainPage> {
                                         context,
                                         'Seher',
                                         seher ?? 'Bilinmiyor',
-                                      ),
-                                      digerVakitler(
-                                        context,
-                                        'Gece yarısı',
-                                        geceYarisi ?? 'Bilinmiyor',
                                       ),
                                     ],
                                   ),
@@ -842,15 +883,13 @@ class _MainPageState extends State<MainPage> {
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
                         SizedBox(height: 55.h),
-
                         Text(
                           hicri!,
                           style: TextStyle(
                             color: themeColor.primary,
-                            fontSize: 20.sp,
+                            fontSize: 18.sp,
                           ),
                         ),
-
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           crossAxisAlignment: CrossAxisAlignment.center,
@@ -966,9 +1005,7 @@ class _MainPageState extends State<MainPage> {
                                   width: 340.w,
                                   height: 75.h,
                                   decoration: BoxDecoration(
-                                    color: Theme.of(
-                                      context,
-                                    ).colorScheme.primary,
+                                    color: Colors.transparent,
                                     borderRadius: BorderRadius.circular(300),
                                   ),
                                   child: Center(
@@ -984,7 +1021,7 @@ class _MainPageState extends State<MainPage> {
                                             fontSize: 23.sp,
                                             color: Theme.of(
                                               context,
-                                            ).colorScheme.onPrimary,
+                                            ).colorScheme.primary,
                                           ),
                                         ),
                                         Text(
@@ -995,7 +1032,7 @@ class _MainPageState extends State<MainPage> {
                                             fontSize: 23.sp,
                                             color: Theme.of(
                                               context,
-                                            ).colorScheme.onPrimary,
+                                            ).colorScheme.primary,
                                           ),
                                         ),
                                       ],
