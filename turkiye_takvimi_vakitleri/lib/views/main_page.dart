@@ -161,7 +161,6 @@ class _MainPageState extends State<MainPage> {
     );
     kalanVakitLabel = 'İmsaka kalan';
     aktifVakitAdi = 'İmsaka kalan';
-
     kalanSure = yarinkiImsak.difference(now);
   }
 
@@ -294,33 +293,29 @@ class _MainPageState extends State<MainPage> {
   }
 
   Future<void> homeWidgetUpdateIOS() async {
-  // HTML'den metin ayıklama
-  final String gununOlayi = parse(ark!.veri!.gununOlayi).body!.text;
-  final String gununSozu = parse(ark!.veri!.gununSozu).body!.text;
+    // HTML'den metin ayıklama
+    final String gununOlayi = parse(ark!.veri!.gununOlayi).body!.text;
+    final String gununSozu = parse(ark!.veri!.gununSozu).body!.text;
 
-  // App Group ID ve Widget adı tanımlanıyor
-  const String appGroupId = 'group.turkiyeTakvimiWidget';
-  const String iosWidgetName = 'turkiye';
+    // App Group ID ve Widget adı tanımlanıyor
+    const String appGroupId = 'group.turkiyeTakvimiWidget';
+    const String iosWidgetName = 'turkiye';
 
-  // App Group üzerinden veri iletimi için hazırlık
-  await HomeWidget.setAppGroupId(appGroupId);
+    // App Group üzerinden veri iletimi için hazırlık
+    await HomeWidget.setAppGroupId(appGroupId);
 
-  // Vakit bilgileri widget’a kaydediliyor
-  await HomeWidget.saveWidgetData('_imsak', imsak);
-  await HomeWidget.saveWidgetData('_sabah', sabah);
-  await HomeWidget.saveWidgetData('_gunes', gunes);
-  await HomeWidget.saveWidgetData('_ogle', ogle);
-  await HomeWidget.saveWidgetData('_ikindi', ikindi);
-  await HomeWidget.saveWidgetData('_aksam', aksam);
-  await HomeWidget.saveWidgetData('_yatsi', yatsi);
+    // Vakit bilgileri widget’a kaydediliyor
+    await HomeWidget.saveWidgetData('_imsak', imsak);
+    await HomeWidget.saveWidgetData('_sabah', sabah);
+    await HomeWidget.saveWidgetData('_gunes', gunes);
+    await HomeWidget.saveWidgetData('_ogle', ogle);
+    await HomeWidget.saveWidgetData('_ikindi', ikindi);
+    await HomeWidget.saveWidgetData('_aksam', aksam);
+    await HomeWidget.saveWidgetData('_yatsi', yatsi);
 
- 
-
-
-  // Widget’ın kendini güncellemesi tetikleniyor
-  await HomeWidget.updateWidget(iOSName: iosWidgetName);
-}
-
+    // Widget’ın kendini güncellemesi tetikleniyor
+    await HomeWidget.updateWidget(iOSName: iosWidgetName);
+  }
 
   Future<void> openSettings() async {
     await AppSettings.openAppSettings();
@@ -844,21 +839,18 @@ class _MainPageState extends State<MainPage> {
                     customDrawerButton(),
                     customLocationDrawerButton(),
                     Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
-                        SizedBox(height: 83.h),
-                        customDivider(),
+                        SizedBox(height: 55.h),
+
                         Text(
                           hicri!,
                           style: TextStyle(
                             color: themeColor.primary,
-                            fontSize: 24.sp,
-                            fontWeight: FontWeight.bold,
-                            height: 0.8.h,
+                            fontSize: 20.sp,
                           ),
                         ),
-                        Transform.rotate(angle: pi, child: customDivider()),
-                        SizedBox(height: 2.0.h),
+
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           crossAxisAlignment: CrossAxisAlignment.center,
@@ -868,101 +860,104 @@ class _MainPageState extends State<MainPage> {
                               children: [
                                 Container(
                                   decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(15),
+                                    borderRadius: BorderRadius.circular(333),
                                     color: themeColor.primary,
                                   ),
                                   child: Padding(
-                                    padding: const EdgeInsets.all(3.0),
+                                    padding: EdgeInsets.all(4.0.w),
                                     child: Text(
                                       _day,
                                       style: TextStyle(
                                         color: themeColor.onPrimary,
-                                        fontSize: 30.sp,
+                                        fontSize: 35.sp,
                                       ),
                                     ),
                                   ),
                                 ),
-                                text(_day2, 15),
-                                text(_month, 15),
-                                text(_year, 15),
+                                text(_month, 20),
+                                text(_year, 20),
+                                text(_day2, 20),
                               ],
                             ),
 
                             analogClock(DateTime.now(), true),
                           ],
                         ),
-                        SizedBox(height: 3.h),
 
-                        timeWidget(
-                          Icons.nightlight_round,
-                          Colors.deepOrange,
-                          'İmsak',
-                          imsak!,
-                          aktifVakitAdi == 'Sabaha'
-                              ? Theme.of(context).colorScheme.error
-                              : Theme.of(context).colorScheme.primary,
+                        Column(
+                          children: [
+                            timeWidget(
+                              Icons.nightlight_round,
+                              Colors.deepOrange,
+                              'İmsak',
+                              imsak!,
+                              aktifVakitAdi == 'Sabaha'
+                                  ? Theme.of(context).colorScheme.error
+                                  : Theme.of(context).colorScheme.primary,
+                            ),
+                            timeWidget(
+                              Icons.wb_twilight,
+                              Colors.orange,
+                              'Sabah',
+                              sabah!,
+                              aktifVakitAdi == 'Güneşe'
+                                  ? Theme.of(context).colorScheme.error
+                                  : Theme.of(context).colorScheme.primary,
+                            ),
+                            timeWidget(
+                              Icons.wb_sunny,
+                              Colors.orangeAccent,
+                              'Güneş',
+                              gunes!,
+                              aktifVakitAdi == 'Öğleye'
+                                  ? Theme.of(context).colorScheme.error
+                                  : Theme.of(context).colorScheme.primary,
+                            ),
+                            timeWidget(
+                              Icons.wb_sunny_outlined,
+                              Colors.yellow,
+                              'Öğle',
+                              ogle!,
+                              aktifVakitAdi == 'İkindiye'
+                                  ? Theme.of(context).colorScheme.error
+                                  : Theme.of(context).colorScheme.primary,
+                            ),
+                            timeWidget(
+                              Icons.cloud_rounded,
+                              Colors.grey[400]!,
+                              'İkindi',
+                              ikindi!,
+                              aktifVakitAdi == 'Akşama'
+                                  ? Theme.of(context).colorScheme.error
+                                  : Theme.of(context).colorScheme.primary,
+                            ),
+                            timeWidget(
+                              Icons.nightlight_sharp,
+                              Colors.brown,
+                              'Akşam',
+                              aksam!,
+                              aktifVakitAdi == 'Yatsıya'
+                                  ? Theme.of(context).colorScheme.error
+                                  : Theme.of(context).colorScheme.primary,
+                            ),
+                            timeWidget(
+                              Icons.nights_stay,
+                              Colors.indigo.shade300,
+                              'Yatsı',
+                              yatsi!,
+                              aktifVakitAdi == 'İmsaka kalan'
+                                  ? Theme.of(context).colorScheme.error
+                                  : Theme.of(context).colorScheme.primary,
+                            ),
+                          ],
                         ),
-                        timeWidget(
-                          Icons.wb_twilight,
-                          Colors.orange,
-                          'Sabah',
-                          sabah!,
-                          aktifVakitAdi == 'Güneşe'
-                              ? Theme.of(context).colorScheme.error
-                              : Theme.of(context).colorScheme.primary,
-                        ),
-                        timeWidget(
-                          Icons.wb_sunny,
-                          Colors.orangeAccent,
-                          'Güneş',
-                          gunes!,
-                          aktifVakitAdi == 'Öğleye'
-                              ? Theme.of(context).colorScheme.error
-                              : Theme.of(context).colorScheme.primary,
-                        ),
-                        timeWidget(
-                          Icons.wb_sunny_outlined,
-                          Colors.yellow,
-                          'Öğle',
-                          ogle!,
-                          aktifVakitAdi == 'İkindiye'
-                              ? Theme.of(context).colorScheme.error
-                              : Theme.of(context).colorScheme.primary,
-                        ),
-                        timeWidget(
-                          Icons.cloud_rounded,
-                          Colors.grey[400]!,
-                          'İkindi',
-                          ikindi!,
-                          aktifVakitAdi == 'Akşama'
-                              ? Theme.of(context).colorScheme.error
-                              : Theme.of(context).colorScheme.primary,
-                        ),
-                        timeWidget(
-                          Icons.nightlight_sharp,
-                          Colors.brown,
-                          'Akşam',
-                          aksam!,
-                          aktifVakitAdi == 'Yatsıya'
-                              ? Theme.of(context).colorScheme.error
-                              : Theme.of(context).colorScheme.primary,
-                        ),
-                        timeWidget(
-                          Icons.nights_stay,
-                          Colors.indigo.shade300,
-                          'Yatsı',
-                          yatsi!,
-                          aktifVakitAdi == 'İmsaka kalan'
-                              ? Theme.of(context).colorScheme.error
-                              : Theme.of(context).colorScheme.primary,
-                        ),
+
                         Image.asset(
                           width: 300.w,
                           'images/divider2.png',
                           color: Theme.of(context).colorScheme.primary,
                         ),
 
-                        SizedBox(height: 2.5.h),
                         Column(
                           children: [
                             Stack(
@@ -1011,6 +1006,7 @@ class _MainPageState extends State<MainPage> {
                             ),
                           ],
                         ),
+                        SizedBox(height: 70.h),
                       ],
                     ),
                     Positioned(
@@ -1072,10 +1068,11 @@ class _MainPageState extends State<MainPage> {
     String text2,
     Color color,
   ) {
-    return Column(
+    final base = Column(
       children: [
         Stack(
           children: [
+            // Parlayan ve bulanık arkaplan
             Container(
               width: 250.w,
               height: 40.h,
@@ -1084,6 +1081,8 @@ class _MainPageState extends State<MainPage> {
                 borderRadius: BorderRadius.circular(300),
               ),
             ),
+
+            // Statik icon ve metinler
             Positioned(
               bottom: 2.5.h,
               left: 5.w,
@@ -1115,7 +1114,6 @@ class _MainPageState extends State<MainPage> {
                       ),
                     ),
                   ),
-
                   Expanded(
                     child: Text(
                       text2,
@@ -1135,6 +1133,21 @@ class _MainPageState extends State<MainPage> {
         SizedBox(height: 3.h),
       ],
     );
+    if (color == Theme.of(context).colorScheme.error) {
+      return base
+          .animate(
+            autoPlay: true,
+            onComplete: (controller) => controller.repeat(reverse: true),
+          )
+          .fade(
+            begin: 0.1,
+            end: 1.0,
+            duration: 800.ms,
+            curve: Curves.easeInOut,
+          );
+    } else {
+      return base;
+    }
   }
 
   Widget customDrawerButton() {
