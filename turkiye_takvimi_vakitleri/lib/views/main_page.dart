@@ -27,6 +27,7 @@ import 'package:turkiye_takvimi_vakitleri/models/id_model.dart';
 import 'package:turkiye_takvimi_vakitleri/models/time_model.dart';
 import 'package:turkiye_takvimi_vakitleri/views/arka_sayfa_page.dart';
 import 'package:turkiye_takvimi_vakitleri/views/qibla.dart';
+import 'package:widget_zoom/widget_zoom.dart';
 
 class MainPage extends StatefulWidget {
   const MainPage({super.key});
@@ -507,9 +508,31 @@ class _MainPageState extends State<MainPage> {
                                     children: [
                                       digerVakitler(
                                         context,
+                                        'Gece yarısı',
+                                        geceYarisi ?? 'Bilinmiyor',
+                                      ),
+
+                                      digerVakitler(
+                                        context,
+                                        'Teheccüd',
+                                        teheccud ?? 'Bilinmiyor',
+                                      ),
+                                      digerVakitler(
+                                        context,
+                                        'Seher',
+                                        seher ?? 'Bilinmiyor',
+                                      ),
+                                      digerVakitler(
+                                        context,
+                                        'İsrak',
+                                        israk ?? 'Bilinmiyor',
+                                      ),
+                                      digerVakitler(
+                                        context,
                                         'Dahve',
                                         dahve ?? 'Bilinmiyor',
                                       ),
+
                                       digerVakitler(
                                         context,
                                         'Kıble',
@@ -541,26 +564,11 @@ class _MainPageState extends State<MainPage> {
                                         'İşa-i Sâni',
                                         isaisani ?? 'Bilinmiyor',
                                       ),
-                                      digerVakitler(
-                                        context,
-                                        'Gece yarısı',
-                                        geceYarisi ?? 'Bilinmiyor',
-                                      ),
+
                                       digerVakitler(
                                         context,
                                         'Gecenin 3\'te biri',
                                         geceninUcBirString(),
-                                      ),
-
-                                      digerVakitler(
-                                        context,
-                                        'Teheccüd',
-                                        teheccud ?? 'Bilinmiyor',
-                                      ),
-                                      digerVakitler(
-                                        context,
-                                        'Seher',
-                                        seher ?? 'Bilinmiyor',
                                       ),
                                     ],
                                   ),
@@ -573,70 +581,6 @@ class _MainPageState extends State<MainPage> {
                     );
                   },
                 ),
-                drawerButtons(Icons.co_present_outlined, 'Hakkımızda', () {
-                  DateTime d1 = DateTime.now();
-                  int ex = d1.year - 1981;
-                  String text =
-                      'KIYMETLİ OKUYUCULARIMIZ\nVatandaşlarımıza hizmet için yayınlanan Türkiye Takvimi’nin ${ex}. senesinde de bize bu hizmeti nasip eden Rabbimize hamd ederiz.Bu takvimdeki dînî yazılar, büyük İslâm âlimlerinin eserlerinden alınmıştır. Bu takvim yılında da okuyucularımızın karşısına, yine dolgun bir muhtevâ ile çıkıyoruz.Takvimimizdeki namaz vakitleri, yürürlükteki mevzuata göre verilmektedir. Namaz vakitlerimiz, mütehassıs bir heyet tarafından hazırlanmıştır. İstanbul için, yıllık asr-ı sânî vakitleri 6 Ocak’ta, takvimimizi temin edebileceğiniz adresler ise son yaprağımızdadır.Takvim yapraklarımızda, âyet-i kerîme ve hadîs-i şerîf meâlleri, dînî yazılar, mübârek isim ve resimler olduğu için, yerlere atılmamasını istirham eder; huzur içinde bir ömür geçirmenizi Cenâb-ı Hak’tan dileriz. Her zaman yazı, teklif ve duâ ile bize yardımcı olan okuyucularımıza teşekkür ederiz.Türkiye Takvimi';
-
-                  showDialog(
-                    context: context,
-                    builder: (context) {
-                      return SizedBox(
-                        child: Dialog(
-                          child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Container(
-                              decoration: BoxDecoration(
-                                color: themeColor.onPrimary,
-                                borderRadius: BorderRadius.circular(22),
-                              ),
-                              child: Padding(
-                                padding: EdgeInsets.all(20.w),
-                                child: SingleChildScrollView(
-                                  child: Column(
-                                    mainAxisSize: MainAxisSize.min,
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceEvenly,
-                                    children: [
-                                      Text(
-                                        text,
-                                        style: TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 15.sp,
-                                          color: Theme.of(
-                                            context,
-                                          ).colorScheme.primary,
-                                        ),
-                                      ),
-                                      Image.asset(
-                                        width: 300.w,
-                                        'images/divider2.png',
-                                        color: Theme.of(
-                                          context,
-                                        ).colorScheme.error,
-                                      ),
-                                      Text(
-                                        'Adresimiz: İhlas Holding Merkez Binası (İhlas Plaza) \nTakvim Hazırlama Servisi, 29 Ekim Caddesi No: 11/A 34197 Yenibosna - İstanbul Tel: 0212 454 21 60 E-mail: bilgi@takvimsiparisi.com',
-                                        style: TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 15.sp,
-                                          color: Theme.of(
-                                            context,
-                                          ).colorScheme.primary,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                      );
-                    },
-                  );
-                }),
                 drawerButtons(
                   Icons.timer_sharp,
                   'Vakitlerle ilgili\naçıklama',
@@ -645,10 +589,54 @@ class _MainPageState extends State<MainPage> {
                       context: context,
                       builder: (context) {
                         return Dialog(
-                          child: ClipRRect(
-                            borderRadius: BorderRadiusGeometry.circular(30),
-                            child: SfPdfViewer.network(
-                              'https://www.turktakvim.com/pdf/MuhimAciklama.TT.pdf',
+                          child: SingleChildScrollView(
+                            child: ClipRRect(
+                              borderRadius: BorderRadiusGeometry.circular(30),
+                              child: Column(
+                                children: [
+                                  WidgetZoom(
+                                    heroAnimationTag: 'asd',
+                                    zoomWidget: Image.asset(
+                                      'images/NAMAZ VAKİTLERİ AÇIKLAMA-1.jpg',
+                                    ),
+                                  ),
+                                  WidgetZoom(
+                                    heroAnimationTag: 'asddd',
+                                    zoomWidget: Image.asset(
+                                      'images/NAMAZ VAKİTLERİ AÇIKLAMA-2.jpg',
+                                    ),
+                                  ),
+                                  WidgetZoom(
+                                    heroAnimationTag: 'asqqqd',
+                                    zoomWidget: Image.asset(
+                                      'images/NAMAZ VAKİTLERİ AÇIKLAMA-3.jpg',
+                                    ),
+                                  ),
+
+                                  drawerButtons(
+                                    Icons.density_small,
+                                    'Detaylı açıklama',
+                                    () {
+                                      showDialog(
+                                        context: context,
+                                        builder: (context) {
+                                          return Dialog(
+                                            child: ClipRRect(
+                                              borderRadius:
+                                                  BorderRadiusGeometry.circular(
+                                                    30,
+                                                  ),
+                                              child: SfPdfViewer.network(
+                                                'https://www.turktakvim.com/pdf/MuhimAciklama.TT.pdf',
+                                              ),
+                                            ),
+                                          );
+                                        },
+                                      );
+                                    },
+                                  ),
+                                ],
+                              ),
                             ),
                           ),
                         );
@@ -656,6 +644,7 @@ class _MainPageState extends State<MainPage> {
                     );
                   },
                 ),
+
                 drawerButtons(Icons.location_on_outlined, 'Kıble pusulası', () {
                   Navigator.of(context).push(
                     MaterialPageRoute(
@@ -757,10 +746,6 @@ class _MainPageState extends State<MainPage> {
                                         width: 44.w,
                                         height: 44.h,
                                         borderRadius: 22.w,
-                                        heading: Text(
-                                          '2. Opsiyon',
-                                          style: TextStyle(fontSize: 25.sp),
-                                        ),
                                       ),
                                     ),
                                   ),
