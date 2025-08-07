@@ -264,7 +264,7 @@ class _MainPageState extends State<MainPage> {
       });
     });
 
-    checkLocation = Timer.periodic(Duration(seconds: 60), (timer) async {
+    checkLocation = Timer.periodic(Duration(seconds: 120), (timer) async {
       await _getLocationAndId();
     });
     context.read<ArkaSayfaCubit>().getArkaSayfa(DateTime.now());
@@ -854,13 +854,18 @@ class _MainPageState extends State<MainPage> {
         child: Scaffold(
           body: isEverythingReady()
               ? Stack(
-                  fit: StackFit.expand,
                   children: [
-                    Image.asset(
-                      'images/background.png',
-                      color: Theme.of(context).colorScheme.primary,
-                      colorBlendMode: BlendMode.colorBurn,
-                      fit: BoxFit.fill,
+                    Container(
+                      decoration: BoxDecoration(
+                        image: DecorationImage(
+                          image: AssetImage('images/background.png'),
+                          fit: BoxFit.cover,
+                          colorFilter: ColorFilter.mode(
+                            themeColor.primary,
+                            BlendMode.color,
+                          ),
+                        ),
+                      ),
                     ),
                     customDrawerButton(),
                     customLocationDrawerButton(),
@@ -904,7 +909,7 @@ class _MainPageState extends State<MainPage> {
                               ],
                             ),
 
-                            analogClock(DateTime.now(), true),
+                            analogClock2(DateTime.now(), true),
                           ],
                         ),
 
@@ -1157,14 +1162,11 @@ class _MainPageState extends State<MainPage> {
     );
     if (color == Theme.of(context).colorScheme.error) {
       return base
-          .animate(
-            autoPlay: true,
-            onComplete: (controller) => controller.repeat(reverse: true),
-          )
+          .animate(onComplete: (controller) => controller.repeat(reverse: true))
           .fade(
             begin: 0.1,
             end: 1.0,
-            duration: 800.ms,
+            duration: 1000.ms,
             curve: Curves.easeInOut,
           );
     } else {
@@ -1261,6 +1263,39 @@ class _MainPageState extends State<MainPage> {
           child: AnalogClock(
             height: 60.h,
             width: 60.w,
+            isLive: false,
+            hourHandColor: Theme.of(context).colorScheme.onSurface,
+            minuteHandColor: Theme.of(context).colorScheme.onSurface,
+            showSecondHand: show,
+            numberColor: themeColor,
+            showNumbers: true,
+            showAllNumbers: true,
+            textScaleFactor: 3.4.sp,
+            showTicks: false,
+            showDigitalClock: false,
+            datetime: d1,
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget analogClock2(DateTime d1, bool show) {
+    final themeColor = Theme.of(context).colorScheme.primary;
+    return Stack(
+      children: [
+        Image.asset(
+          'images/bell.png',
+          color: themeColor,
+          width: 100.w,
+          fit: BoxFit.contain,
+        ),
+        Positioned(
+          top: 34.w,
+          left: 20.w,
+          child: AnalogClock(
+            height: 60.h,
+            width: 60.w,
             isLive: true,
             hourHandColor: Theme.of(context).colorScheme.onSurface,
             minuteHandColor: Theme.of(context).colorScheme.onSurface,
@@ -1296,65 +1331,3 @@ class _MainPageState extends State<MainPage> {
     );
   }
 }
-
-/*
-// ..._MainPageState içinde...
-
-Timer? _timer;
-String kalanVakitLabel = '';
-Duration? kalanSure;
-
-@override
-void initState() {
-  super.initState();
-  _getLocationAndId();
-  _timer = Timer.periodic(Duration(seconds: 1), (_) => setState(() => _updateKalanVakit()));
-  checkLocation = Timer.periodic(Duration(seconds: 30), (timer) async {
-    await _getLocationAndId();
-  });
-}
-
-@override
-void dispose() {
-  checkLocation?.cancel();
-  _timer?.cancel();
-  super.dispose();
-}
-
-void _updateKalanVakit() {
-  if ([imsak, sabah, gunes, ogle, ikindi, aksam, yatsi].any((v) => v == null)) return;
-  final now = DateTime.now();
-  final vakitler = [
-    {'ad': 'İmsak', 'saat': imsak!},
-    {'ad': 'Sabah', 'saat': sabah!},
-    {'ad': 'Güneş', 'saat': gunes!},
-    {'ad': 'Öğle', 'saat': ogle!},
-    {'ad': 'İkindi', 'saat': ikindi!},
-    {'ad': 'Akşam', 'saat': aksam!},
-    {'ad': 'Yatsı', 'saat': yatsi!},
-  ];
-  for (int i = 0; i < vakitler.length; i++) {
-    final dt = DateTime(now.year, now.month, now.day,
-        int.parse(vakitler[i]['saat']!.split(':')[0]),
-        int.parse(vakitler[i]['saat']!.split(':')[1]));
-    if (now.isBefore(dt)) {
-      kalanVakitLabel = '${vakitler[i]['ad']}e kalan';
-      kalanSure = dt.difference(now);
-      return;
-    }
-  }
-  // Gün bitti, yarının imsakına kadar göster
-  final yarinImsak = DateTime(now.year, now.month, now.day + 1,
-      int.parse(imsak!.split(':')[0]), int.parse(imsak!.split(':')[1]));
-  kalanVakitLabel = 'İmsake kalan';
-  kalanSure = yarinImsak.difference(now);
-}
-
-String kalanSureFormat() {
-  if (kalanSure == null) return '';
-  final h = kalanSure!.inHours;
-  final m = kalanSure!.inMinutes % 60;
-  final s = kalanSure!.inSeconds % 60;
-  return '$h saat $m dakika $s saniye';
-}
-*/

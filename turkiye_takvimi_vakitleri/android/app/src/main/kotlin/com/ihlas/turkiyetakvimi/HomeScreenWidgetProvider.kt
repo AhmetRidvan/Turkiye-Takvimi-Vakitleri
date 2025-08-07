@@ -1,4 +1,4 @@
-package com.example.turkiye_takvimi_vakitleri
+package com.ihlas.turkiyetakvimi
 
 import android.appwidget.AppWidgetManager
 import android.content.Context
