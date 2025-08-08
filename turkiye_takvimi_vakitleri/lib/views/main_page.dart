@@ -421,51 +421,69 @@ class _MainPageState extends State<MainPage> {
               children: [
                 drawerButtons(Icons.data_array_rounded, 'Günün sözü', () {
                   showDialog(
+                    barrierColor: Theme.of(context).colorScheme.primary,
                     context: context,
                     builder: (context) {
                       final parsed = parse(ark!.veri!.gununSozu);
                       final parsed2 = parse(ark!.veri!.gununOlayi);
-                      return Dialog(
-                        child: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Container(
-                            decoration: BoxDecoration(
-                              color: themeColor.onPrimary,
-                              borderRadius: BorderRadius.circular(22),
-                            ),
-                            child: Padding(
-                              padding: EdgeInsets.all(20.w),
-                              child: Column(
-                                mainAxisSize: MainAxisSize.min,
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceEvenly,
-                                children: [
-                                  Text(
-                                    parsed.body!.text,
-                                    textAlign: TextAlign.center,
-                                    style: TextStyle(
-                                      fontSize: 20.sp,
+                      return WidgetZoom(
+                        heroAnimationTag: 'se',
+                        zoomWidget: Dialog(
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Container(
+                              decoration: BoxDecoration(
+                                color: themeColor.onPrimary,
+                                borderRadius: BorderRadius.circular(22),
+                              ),
+                              child: Padding(
+                                padding: EdgeInsets.all(20.w),
+                                child: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceEvenly,
+                                  children: [
+                                    Text(
+                                      parsed.body!.text,
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                        fontSize: 20.sp,
+                                        color: Theme.of(
+                                          context,
+                                        ).colorScheme.primary,
+                                      ),
+                                    ),
+                                    Image.asset(
+                                      width: 300.w,
+                                      'images/divider2.png',
                                       color: Theme.of(
                                         context,
-                                      ).colorScheme.primary,
+                                      ).colorScheme.error,
                                     ),
-                                  ),
-                                  Image.asset(
-                                    width: 300.w,
-                                    'images/divider2.png',
-                                    color: Theme.of(context).colorScheme.error,
-                                  ),
-                                  Text(
-                                    parsed2.body!.text,
-                                    textAlign: TextAlign.center,
-                                    style: TextStyle(
-                                      fontSize: 20.sp,
-                                      color: Theme.of(
-                                        context,
-                                      ).colorScheme.primary,
+                                    Text(
+                                      parsed2.body!.text,
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                        fontSize: 20.sp,
+                                        color: Theme.of(
+                                          context,
+                                        ).colorScheme.primary,
+                                      ),
                                     ),
-                                  ),
-                                ],
+                                    IconButton(
+                                      onPressed: () {
+                                        Navigator.pop(context);
+                                      },
+                                      icon: Icon(
+                                        size: 30.sp,
+                                        Icons.keyboard_return_rounded,
+                                        color: Theme.of(
+                                          context,
+                                        ).colorScheme.primary,
+                                      ),
+                                    ),
+                                  ],
+                                ),
                               ),
                             ),
                           ),
@@ -488,10 +506,12 @@ class _MainPageState extends State<MainPage> {
                   'Diğer vakitler',
                   () {
                     showDialog(
+                      barrierColor: Theme.of(context).colorScheme.primary,
                       context: context,
                       builder: (context) {
-                        return SizedBox(
-                          child: Dialog(
+                        return WidgetZoom(
+                          heroAnimationTag: 'asdq',
+                          zoomWidget: Dialog(
                             child: Padding(
                               padding: const EdgeInsets.all(8.0),
                               child: Container(
@@ -570,6 +590,18 @@ class _MainPageState extends State<MainPage> {
                                         'Gecenin 3\'te biri',
                                         geceninUcBirString(),
                                       ),
+                                      IconButton(
+                                        onPressed: () {
+                                          Navigator.pop(context);
+                                        },
+                                        icon: Icon(
+                                          size: 30.sp,
+                                          Icons.keyboard_return_rounded,
+                                          color: Theme.of(
+                                            context,
+                                          ).colorScheme.primary,
+                                        ),
+                                      ),
                                     ],
                                   ),
                                 ),
@@ -588,55 +620,53 @@ class _MainPageState extends State<MainPage> {
                     showDialog(
                       context: context,
                       builder: (context) {
-                        return Dialog(
-                          child: SingleChildScrollView(
-                            child: ClipRRect(
-                              borderRadius: BorderRadiusGeometry.circular(30),
-                              child: Column(
-                                children: [
-                                  WidgetZoom(
-                                    heroAnimationTag: 'asd',
-                                    zoomWidget: Image.asset(
-                                      'images/NAMAZ VAKİTLERİ AÇIKLAMA-1.jpg',
-                                    ),
+                        return SingleChildScrollView(
+                          child: ClipRRect(
+                            borderRadius: BorderRadiusGeometry.circular(30),
+                            child: Column(
+                              children: [
+                                WidgetZoom(
+                                  heroAnimationTag: 'asd',
+                                  zoomWidget: Image.asset(
+                                    'images/NAMAZ VAKİTLERİ AÇIKLAMA-1.jpg',
                                   ),
-                                  WidgetZoom(
-                                    heroAnimationTag: 'asddd',
-                                    zoomWidget: Image.asset(
-                                      'images/NAMAZ VAKİTLERİ AÇIKLAMA-2.jpg',
-                                    ),
+                                ),
+                                WidgetZoom(
+                                  heroAnimationTag: 'asddd',
+                                  zoomWidget: Image.asset(
+                                    'images/NAMAZ VAKİTLERİ AÇIKLAMA-2.jpg',
                                   ),
-                                  WidgetZoom(
-                                    heroAnimationTag: 'asqqqd',
-                                    zoomWidget: Image.asset(
-                                      'images/NAMAZ VAKİTLERİ AÇIKLAMA-3.jpg',
-                                    ),
+                                ),
+                                WidgetZoom(
+                                  heroAnimationTag: 'asqqqd',
+                                  zoomWidget: Image.asset(
+                                    'images/NAMAZ VAKİTLERİ AÇIKLAMA-3.jpg',
                                   ),
+                                ),
 
-                                  drawerButtons(
-                                    Icons.density_small,
-                                    'Detaylı açıklama',
-                                    () {
-                                      showDialog(
-                                        context: context,
-                                        builder: (context) {
-                                          return Dialog(
-                                            child: ClipRRect(
-                                              borderRadius:
-                                                  BorderRadiusGeometry.circular(
-                                                    30,
-                                                  ),
-                                              child: SfPdfViewer.network(
-                                                'https://www.turktakvim.com/pdf/MuhimAciklama.TT.pdf',
-                                              ),
+                                drawerButtons(
+                                  Icons.density_small,
+                                  'Detaylı açıklama',
+                                  () {
+                                    showDialog(
+                                      context: context,
+                                      builder: (context) {
+                                        return Dialog(
+                                          child: ClipRRect(
+                                            borderRadius:
+                                                BorderRadiusGeometry.circular(
+                                                  30,
+                                                ),
+                                            child: SfPdfViewer.network(
+                                              'https://www.turktakvim.com/pdf/MuhimAciklama.TT.pdf',
                                             ),
-                                          );
-                                        },
-                                      );
-                                    },
-                                  ),
-                                ],
-                              ),
+                                          ),
+                                        );
+                                      },
+                                    );
+                                  },
+                                ),
+                              ],
                             ),
                           ),
                         );
