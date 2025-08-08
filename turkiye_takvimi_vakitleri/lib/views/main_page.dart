@@ -859,7 +859,7 @@ class _MainPageState extends State<MainPage> {
                       decoration: BoxDecoration(
                         image: DecorationImage(
                           image: AssetImage('images/background.png'),
-                          fit: BoxFit.cover,
+                          fit: BoxFit.fill,
                           colorFilter: ColorFilter.mode(
                             themeColor.primary,
                             BlendMode.color,
