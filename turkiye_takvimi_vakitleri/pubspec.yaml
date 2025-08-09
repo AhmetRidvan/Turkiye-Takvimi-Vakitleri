@@ -52,7 +52,7 @@ dependencies:
   flutter_html: ^3.0.0
   flutter_qiblah: ^3.1.0+1
   home_widget: ^0.8.0
-  syncfusion_flutter_pdfviewer: ^30.1.42
+  syncfusion_flutter_pdfviewer: ^30.2.4
   widget_zoom: ^0.0.4
 
 dev_dependencies:

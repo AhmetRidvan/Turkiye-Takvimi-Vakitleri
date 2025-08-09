@@ -25,6 +25,7 @@ import 'package:turkiye_takvimi_vakitleri/cubits/times_cubit.dart';
 import 'package:turkiye_takvimi_vakitleri/models/arka_sayfa_model.dart';
 import 'package:turkiye_takvimi_vakitleri/models/id_model.dart';
 import 'package:turkiye_takvimi_vakitleri/models/time_model.dart';
+import 'package:turkiye_takvimi_vakitleri/views/aciklama.dart';
 import 'package:turkiye_takvimi_vakitleri/views/arka_sayfa_page.dart';
 import 'package:turkiye_takvimi_vakitleri/views/qibla.dart';
 import 'package:widget_zoom/widget_zoom.dart';
@@ -617,60 +618,13 @@ class _MainPageState extends State<MainPage> {
                   Icons.timer_sharp,
                   'Vakitlerle ilgili\naçıklama',
                   () {
-                    showDialog(
-                      context: context,
-                      builder: (context) {
-                        return SingleChildScrollView(
-                          child: ClipRRect(
-                            borderRadius: BorderRadiusGeometry.circular(30),
-                            child: Column(
-                              children: [
-                                WidgetZoom(
-                                  heroAnimationTag: 'asd',
-                                  zoomWidget: Image.asset(
-                                    'images/NAMAZ VAKİTLERİ AÇIKLAMA-1.jpg',
-                                  ),
-                                ),
-                                WidgetZoom(
-                                  heroAnimationTag: 'asddd',
-                                  zoomWidget: Image.asset(
-                                    'images/NAMAZ VAKİTLERİ AÇIKLAMA-2.jpg',
-                                  ),
-                                ),
-                                WidgetZoom(
-                                  heroAnimationTag: 'asqqqd',
-                                  zoomWidget: Image.asset(
-                                    'images/NAMAZ VAKİTLERİ AÇIKLAMA-3.jpg',
-                                  ),
-                                ),
-
-                                drawerButtons(
-                                  Icons.density_small,
-                                  'Detaylı açıklama',
-                                  () {
-                                    showDialog(
-                                      context: context,
-                                      builder: (context) {
-                                        return Dialog(
-                                          child: ClipRRect(
-                                            borderRadius:
-                                                BorderRadiusGeometry.circular(
-                                                  30,
-                                                ),
-                                            child: SfPdfViewer.network(
-                                              'https://www.turktakvim.com/pdf/MuhimAciklama.TT.pdf',
-                                            ),
-                                          ),
-                                        );
-                                      },
-                                    );
-                                  },
-                                ),
-                              ],
-                            ),
-                          ),
-                        );
-                      },
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) {
+                          return Aciklama();
+                        },
+                      ),
                     );
                   },
                 ),
