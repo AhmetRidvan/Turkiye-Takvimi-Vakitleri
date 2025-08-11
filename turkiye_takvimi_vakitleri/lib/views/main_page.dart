@@ -151,6 +151,7 @@ class _MainPageState extends State<MainPage> {
         kalanVakitLabel = '${vakitler1[i]['ad']} kalan';
         kalanSure = dt.difference(now);
         aktifVakitAdi = vakitler1[i]['ad'];
+
         return;
       }
     }
@@ -161,8 +162,9 @@ class _MainPageState extends State<MainPage> {
       int.parse(imsak!.split(':')[0]),
       int.parse(imsak!.split(':')[1]),
     );
-    kalanVakitLabel = 'İmsaka kalan';
-    aktifVakitAdi = 'İmsaka kalan';
+    kalanVakitLabel = 'İmsaka';
+    aktifVakitAdi = 'İmsaka';
+
     kalanSure = yarinkiImsak.difference(now);
   }
 
@@ -958,7 +960,7 @@ class _MainPageState extends State<MainPage> {
                               Colors.indigo.shade300,
                               'Yatsı',
                               yatsi!,
-                              aktifVakitAdi == 'İmsaka kalan'
+                              aktifVakitAdi == 'İmsaka'
                                   ? Theme.of(context).colorScheme.error
                                   : Theme.of(context).colorScheme.primary,
                             ),
