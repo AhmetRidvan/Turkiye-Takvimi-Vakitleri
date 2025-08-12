@@ -47,7 +47,6 @@ class QiblaCompass extends StatelessWidget {
         return Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const SizedBox(height: 20),
             Center(
               child: Stack(
                 alignment: Alignment.center,
@@ -57,14 +56,7 @@ class QiblaCompass extends StatelessWidget {
                     height: 250,
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
-                      color: Theme.of(context).colorScheme.error,
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black12,
-                          blurRadius: 20,
-                          spreadRadius: 2,
-                        ),
-                      ],
+                      border: BoxBorder.all(color: Colors.black, width: 3.w),
                     ),
                     child: Center(
                       child: Transform.rotate(
@@ -72,7 +64,7 @@ class QiblaCompass extends StatelessWidget {
                         child: Image.asset(
                           'images/qibla.png',
                           width: 70.w,
-                          color: Theme.of(context).colorScheme.onPrimary,
+                          color: Colors.black,
                         ),
                       ),
                     ),
@@ -80,6 +72,7 @@ class QiblaCompass extends StatelessWidget {
                 ],
               ),
             ),
+            SizedBox(height: 100.h),
           ],
         );
       },
