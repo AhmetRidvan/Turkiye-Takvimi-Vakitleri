@@ -9,7 +9,7 @@ class QiblaScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Kıble Yönü')),
+      appBar: AppBar(),
       body: FutureBuilder(
         future: FlutterQiblah.androidDeviceSensorSupport(),
         builder: (context, snapshot) {
@@ -39,7 +39,7 @@ class QiblaCompass extends StatelessWidget {
       stream: FlutterQiblah.qiblahStream,
       builder: (context, snapshot) {
         if (!snapshot.hasData || snapshot.hasError) {
-          return const Center(child: Text("Kıble yönü verisi alınamadı."));
+          return const Center(child: CircularProgressIndicator());
         }
 
         final qiblaDirection = snapshot.data!;
@@ -48,48 +48,36 @@ class QiblaCompass extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             const SizedBox(height: 20),
-            Stack(
-              alignment: Alignment.center,
-              children: [
-                Container(
-                  width: 250,
-                  height: 250,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: Theme.of(context).colorScheme.error,
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black12,
-                        blurRadius: 20,
-                        spreadRadius: 2,
+            Center(
+              child: Stack(
+                alignment: Alignment.center,
+                children: [
+                  Container(
+                    width: 250,
+                    height: 250,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: Theme.of(context).colorScheme.error,
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black12,
+                          blurRadius: 20,
+                          spreadRadius: 2,
+                        ),
+                      ],
+                    ),
+                    child: Center(
+                      child: Transform.rotate(
+                        angle: -qibla * (pi / 180),
+                        child: Image.asset(
+                          'images/qibla.png',
+                          width: 70.w,
+                          color: Theme.of(context).colorScheme.onPrimary,
+                        ),
                       ),
-                    ],
+                    ),
                   ),
-                  child: const Center(
-                    child: Text("N", style: TextStyle(fontSize: 18)),
-                  ),
-                ),
-                Transform.rotate(
-                  angle: -qibla * (pi / 180),
-                  child: Icon(
-                    Icons.navigation,
-                    size: 100,
-                    color: Theme.of(context).colorScheme.onPrimary,
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 20),
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: 16),
-              child: Text(
-                'Accelerometer, Magnetometer ve Gyroscope sensörlerinden en iyi şekilde bilgi alabilmemiz için 6 saniye boyunca 8 hareketi yapınız.',
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 20.sp,
-                  color: Theme.of(context).colorScheme.error,
-                ),
+                ],
               ),
             ),
           ],

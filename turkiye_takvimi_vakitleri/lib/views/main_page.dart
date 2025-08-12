@@ -418,102 +418,21 @@ class _MainPageState extends State<MainPage> {
               ],
             ),
           ),
-          child: Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                drawerButtons(Icons.data_array_rounded, 'Günün sözü', () {
-                  showDialog(
-                    barrierColor: Theme.of(context).colorScheme.primary,
-                    context: context,
-                    builder: (context) {
-                      final parsed = parse(ark!.veri!.gununSozu);
-                      final parsed2 = parse(ark!.veri!.gununOlayi);
-                      return WidgetZoom(
-                        heroAnimationTag: 'se',
-                        zoomWidget: Dialog(
-                          child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Container(
-                              decoration: BoxDecoration(
-                                color: themeColor.onPrimary,
-                                borderRadius: BorderRadius.circular(22),
-                              ),
-                              child: Padding(
-                                padding: EdgeInsets.all(20.w),
-                                child: Column(
-                                  mainAxisSize: MainAxisSize.min,
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceEvenly,
-                                  children: [
-                                    Text(
-                                      parsed.body!.text,
-                                      textAlign: TextAlign.center,
-                                      style: TextStyle(
-                                        fontSize: 20.sp,
-                                        color: Theme.of(
-                                          context,
-                                        ).colorScheme.primary,
-                                      ),
-                                    ),
-                                    Image.asset(
-                                      width: 300.w,
-                                      'images/divider2.png',
-                                      color: Theme.of(
-                                        context,
-                                      ).colorScheme.error,
-                                    ),
-                                    Text(
-                                      parsed2.body!.text,
-                                      textAlign: TextAlign.center,
-                                      style: TextStyle(
-                                        fontSize: 20.sp,
-                                        color: Theme.of(
-                                          context,
-                                        ).colorScheme.primary,
-                                      ),
-                                    ),
-                                    IconButton(
-                                      onPressed: () {
-                                        Navigator.pop(context);
-                                      },
-                                      icon: Icon(
-                                        size: 30.sp,
-                                        Icons.keyboard_return_rounded,
-                                        color: Theme.of(
-                                          context,
-                                        ).colorScheme.primary,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                      );
-                    },
-                  );
-                }),
-                drawerButtons(Icons.padding_outlined, 'Arka yaprak', () {
-                  Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (context) {
-                        return ArkaSayfaPage();
-                      },
-                    ),
-                  );
-                }),
-                drawerButtons(
-                  Icons.insert_chart_outlined_sharp,
-                  'Diğer vakitler',
-                  () {
+          child: SafeArea(
+            child: Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  drawerButtons(Icons.data_array_rounded, 'Günün sözü', () {
                     showDialog(
                       barrierColor: Theme.of(context).colorScheme.primary,
+
                       context: context,
                       builder: (context) {
+                        final parsed = parse(ark!.veri!.gununSozu);
+                        final parsed2 = parse(ark!.veri!.gununOlayi);
                         return WidgetZoom(
-                          heroAnimationTag: 'asdq',
+                          heroAnimationTag: 'se',
                           zoomWidget: Dialog(
                             child: Padding(
                               padding: const EdgeInsets.all(8.0),
@@ -529,69 +448,32 @@ class _MainPageState extends State<MainPage> {
                                     mainAxisAlignment:
                                         MainAxisAlignment.spaceEvenly,
                                     children: [
-                                      digerVakitler(
-                                        context,
-                                        'Gece yarısı',
-                                        geceYarisi ?? 'Bilinmiyor',
+                                      Text(
+                                        parsed.body!.text,
+                                        textAlign: TextAlign.center,
+                                        style: TextStyle(
+                                          fontSize: 20.sp,
+                                          color: Theme.of(
+                                            context,
+                                          ).colorScheme.primary,
+                                        ),
                                       ),
-
-                                      digerVakitler(
-                                        context,
-                                        'Teheccüd',
-                                        teheccud ?? 'Bilinmiyor',
+                                      Image.asset(
+                                        width: 300.w,
+                                        'images/divider2.png',
+                                        color: Theme.of(
+                                          context,
+                                        ).colorScheme.error,
                                       ),
-                                      digerVakitler(
-                                        context,
-                                        'Seher',
-                                        seher ?? 'Bilinmiyor',
-                                      ),
-                                      digerVakitler(
-                                        context,
-                                        'İsrak',
-                                        israk ?? 'Bilinmiyor',
-                                      ),
-                                      digerVakitler(
-                                        context,
-                                        'Dahve',
-                                        dahve ?? 'Bilinmiyor',
-                                      ),
-
-                                      digerVakitler(
-                                        context,
-                                        'Kıble',
-                                        kible ?? 'Bilinmiyor',
-                                      ),
-                                      digerVakitler(
-                                        context,
-                                        'Kerâhet',
-                                        kerahet ?? 'Bilinmiyor',
-                                      ),
-                                      digerVakitler(
-                                        context,
-                                        'Asr-ı Sâni',
-                                        asriSani ?? 'Bilinmiyor',
-                                      ),
-                                      digerVakitler(
-                                        context,
-                                        'İsfirar',
-                                        isfirar ?? 'Bilinmiyor',
-                                      ),
-                                      digerVakitler(
-                                        context,
-                                        'İştibâk',
-                                        istibak ?? 'Bilinmiyor',
-                                      ),
-
-                                      digerVakitler(
-                                        context,
-                                        'İşa-i Sâni',
-                                        isaisani ?? 'Bilinmiyor',
-                                      ),
-
-                                      digerVakitler(
-                                        context,
-                                        'Gecenin 3\'te biri',
-                                        geceninUcBirString(),
+                                      Text(
+                                        parsed2.body!.text,
+                                        textAlign: TextAlign.center,
+                                        style: TextStyle(
+                                          fontSize: 20.sp,
+                                          color: Theme.of(
+                                            context,
+                                          ).colorScheme.primary,
+                                        ),
                                       ),
                                       IconButton(
                                         onPressed: () {
@@ -614,12 +496,129 @@ class _MainPageState extends State<MainPage> {
                         );
                       },
                     );
-                  },
-                ),
-                drawerButtons(
-                  Icons.timer_sharp,
-                  'Vakitlerle ilgili\naçıklama',
-                  () {
+                  }),
+                  drawerButtons(Icons.padding_outlined, 'Arka yaprak', () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) {
+                          return ArkaSayfaPage();
+                        },
+                      ),
+                    );
+                  }),
+                  drawerButtons(
+                    Icons.insert_chart_outlined_sharp,
+                    'Diğer vakitler',
+                    () {
+                      showDialog(
+                        barrierColor: Theme.of(context).colorScheme.primary,
+                        context: context,
+                        builder: (context) {
+                          return WidgetZoom(
+                            heroAnimationTag: 'asdq',
+                            zoomWidget: Dialog(
+                              child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    color: themeColor.onPrimary,
+                                    borderRadius: BorderRadius.circular(22),
+                                  ),
+                                  child: Padding(
+                                    padding: EdgeInsets.all(20.w),
+                                    child: Column(
+                                      mainAxisSize: MainAxisSize.min,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceEvenly,
+                                      children: [
+                                        digerVakitler(
+                                          context,
+                                          'Gece yarısı',
+                                          geceYarisi ?? 'Bilinmiyor',
+                                        ),
+
+                                        digerVakitler(
+                                          context,
+                                          'Teheccüd',
+                                          teheccud ?? 'Bilinmiyor',
+                                        ),
+                                        digerVakitler(
+                                          context,
+                                          'Seher',
+                                          seher ?? 'Bilinmiyor',
+                                        ),
+                                        digerVakitler(
+                                          context,
+                                          'İsrak',
+                                          israk ?? 'Bilinmiyor',
+                                        ),
+                                        digerVakitler(
+                                          context,
+                                          'Dahve',
+                                          dahve ?? 'Bilinmiyor',
+                                        ),
+
+                                        digerVakitler(
+                                          context,
+                                          'Kıble',
+                                          kible ?? 'Bilinmiyor',
+                                        ),
+                                        digerVakitler(
+                                          context,
+                                          'Kerâhet',
+                                          kerahet ?? 'Bilinmiyor',
+                                        ),
+                                        digerVakitler(
+                                          context,
+                                          'Asr-ı Sâni',
+                                          asriSani ?? 'Bilinmiyor',
+                                        ),
+                                        digerVakitler(
+                                          context,
+                                          'İsfirar',
+                                          isfirar ?? 'Bilinmiyor',
+                                        ),
+                                        digerVakitler(
+                                          context,
+                                          'İştibâk',
+                                          istibak ?? 'Bilinmiyor',
+                                        ),
+
+                                        digerVakitler(
+                                          context,
+                                          'İşa-i Sâni',
+                                          isaisani ?? 'Bilinmiyor',
+                                        ),
+
+                                        digerVakitler(
+                                          context,
+                                          'Gecenin 3\'te biri',
+                                          geceninUcBirString(),
+                                        ),
+                                        IconButton(
+                                          onPressed: () {
+                                            Navigator.pop(context);
+                                          },
+                                          icon: Icon(
+                                            size: 30.sp,
+                                            Icons.keyboard_return_rounded,
+                                            color: Theme.of(
+                                              context,
+                                            ).colorScheme.primary,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          );
+                        },
+                      );
+                    },
+                  ),
+                  drawerButtons(Icons.timer_sharp, 'Vakitler açıklaması', () {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
@@ -628,125 +627,94 @@ class _MainPageState extends State<MainPage> {
                         },
                       ),
                     );
-                  },
-                ),
+                  }),
 
-                drawerButtons(Icons.location_on_outlined, 'Kıble pusulası', () {
-                  Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (context) {
-                        return QiblaScreen();
-                      },
-                    ),
-                  );
-                }),
-                drawerButtons(Icons.color_lens_outlined, 'Renk seç', () {
-                  showDialog(
-                    context: context,
-                    builder: (context) {
-                      return Dialog(
-                        child: SingleChildScrollView(
-                          child: Padding(
-                            padding: EdgeInsets.all(20.0.w),
-                            child: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              children: [
-                                // Show the color picker in sized box in a raised card.
-                                SizedBox(
-                                  width: double.infinity,
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(6),
-                                    child: Card(
-                                      elevation: 2,
-                                      child: ColorPicker(
-                                        pickersEnabled: {
-                                          ColorPickerType.wheel: false,
-                                          ColorPickerType.accent: false,
-                                          ColorPickerType.both: false,
-                                          ColorPickerType.bw: false,
-                                          ColorPickerType.custom: false,
-                                          ColorPickerType.customSecondary:
-                                              false,
-                                          ColorPickerType.primary: false,
-                                        },
-                                        color: color65,
-
-                                        onColorChanged: (Color color2) {
-                                          setState(() => color65 = color2);
-                                          context
-                                              .read<ThemeCubits>()
-                                              .changeColor(color65);
-                                        },
-
-                                        width: 44.w,
-                                        height: 44.h,
-                                        borderRadius: 22.w,
-                                        heading: Text(
-                                          'Rengi seçiniz',
-                                          style: TextStyle(fontSize: 25.sp),
-                                        ),
-                                        subheading: Text(
-                                          'Opaklık seçiniz',
-                                          style: TextStyle(fontSize: 25.sp),
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                                TextButton(
-                                  onPressed: () {
-                                    Navigator.of(context).pop();
-                                  },
-                                  child: Text(
-                                    'Tamam',
-                                    style: TextStyle(fontSize: 30.sp),
-                                  ),
-                                ),
-                                SizedBox(
-                                  width: double.infinity,
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(6),
-                                    child: Card(
-                                      elevation: 2,
-                                      child: ColorPicker(
-                                        pickersEnabled: {
-                                          ColorPickerType.wheel: true,
-                                          ColorPickerType.accent: false,
-                                          ColorPickerType.both: false,
-                                          ColorPickerType.bw: false,
-                                          ColorPickerType.custom: false,
-                                          ColorPickerType.customSecondary:
-                                              false,
-                                          ColorPickerType.primary: false,
-                                        },
-                                        color: color65,
-
-                                        onColorChanged: (Color color2) {
-                                          setState(() => color65 = color2);
-                                          context
-                                              .read<ThemeCubits>()
-                                              .changeColor(color65);
-                                        },
-
-                                        width: 44.w,
-                                        height: 44.h,
-                                        borderRadius: 22.w,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
+                  drawerButtons(
+                    Icons.location_on_outlined,
+                    'Kıble pusulası',
+                    () {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (context) {
+                            return QiblaScreen();
+                          },
                         ),
                       );
                     },
-                  ).then((value) {});
-                }),
+                  ),
+                  drawerButtons(Icons.color_lens_outlined, 'Renk seç', () {
+                    showDialog(
+                      context: context,
+                      builder: (context) {
+                        return Dialog(
+                          child: SingleChildScrollView(
+                            child: Padding(
+                              padding: EdgeInsets.all(20.0.w),
+                              child: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceEvenly,
+                                children: [
+                                  // Show the color picker in sized box in a raised card.
+                                  SizedBox(
+                                    width: double.infinity,
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(6),
+                                      child: Card(
+                                        elevation: 2,
+                                        child: ColorPicker(
+                                          pickersEnabled: {
+                                            ColorPickerType.wheel: false,
+                                            ColorPickerType.accent: false,
+                                            ColorPickerType.both: false,
+                                            ColorPickerType.bw: false,
+                                            ColorPickerType.custom: false,
+                                            ColorPickerType.customSecondary:
+                                                false,
+                                            ColorPickerType.primary: true,
+                                          },
+                                          color: color65,
 
-                // Show the color picker in sized box in a raised card.
-              ],
+                                          onColorChanged: (Color color2) {
+                                            setState(() => color65 = color2);
+                                            context
+                                                .read<ThemeCubits>()
+                                                .changeColor(color65);
+                                          },
+
+                                          width: 44.w,
+                                          height: 44.h,
+                                          borderRadius: 22.w,
+                                          heading: Text(
+                                            'Rengi seçiniz',
+                                            style: TextStyle(fontSize: 25.sp),
+                                          ),
+                                          subheading: Text(
+                                            'Opaklık seçiniz',
+                                            style: TextStyle(fontSize: 25.sp),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  ElevatedButton(
+                                    onPressed: () {
+                                      Navigator.pop(context);
+                                    },
+                                    child: Text('Geri'),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        );
+                      },
+                    ).then((value) {});
+                  }),
+
+                  // Show the color picker in sized box in a raised card.
+                ],
+              ),
             ),
           ),
         ),
@@ -846,10 +814,6 @@ class _MainPageState extends State<MainPage> {
                         image: DecorationImage(
                           image: AssetImage('images/background.png'),
                           fit: BoxFit.fill,
-                          colorFilter: ColorFilter.mode(
-                            themeColor.primary,
-                            BlendMode.color,
-                          ),
                         ),
                       ),
                     ),

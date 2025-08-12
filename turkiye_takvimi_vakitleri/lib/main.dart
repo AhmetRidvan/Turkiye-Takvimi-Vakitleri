@@ -18,7 +18,7 @@ void main() async {
   final prefs = await SharedPreferences.getInstance();
   final colorValue = prefs.getInt('theme_color') ?? Colors.red.value;
   final initialColor = Color(colorValue);
-  runApp(MyApp(initialColor: initialColor)); 
+  runApp(MyApp(initialColor: initialColor));
 }
 
 class MyApp extends StatelessWidget {
@@ -71,6 +71,15 @@ class MyApp extends StatelessWidget {
               return MaterialApp(
                 theme: state,
                 debugShowCheckedModeBanner: false,
+                builder: (context, child) {
+                  final mediaQueryData = MediaQuery.of(context);
+                  return MediaQuery(
+                    data: mediaQueryData.copyWith(
+                      textScaler: TextScaler.linear(1.0), // Sistem font büyüklüğünü sabitle
+                    ),
+                    child: child!,
+                  );
+                },
                 home: FlutterSplashScreen.scale(
                   childWidget: SizedBox(
                     height: 100.h,

@@ -24,7 +24,10 @@ class _AciklamaState extends State<Aciklama> {
               onPressed: () {
                 Navigator.pop(context);
               },
-              child: const Icon(Icons.arrow_back),
+              child: Icon(
+                Icons.arrow_back,
+                color: Theme.of(context).colorScheme.onPrimary,
+              ),
             ),
             SizedBox(width: 10.w), // Butonlar arası boşluk
             FloatingActionButton(
@@ -66,7 +69,10 @@ class _AciklamaState extends State<Aciklama> {
                   },
                 );
               },
-              child: Icon(Icons.description_sharp),
+              child: Icon(
+                Icons.description_sharp,
+                color: Theme.of(context).colorScheme.onPrimary,
+              ),
             ),
           ],
         ),

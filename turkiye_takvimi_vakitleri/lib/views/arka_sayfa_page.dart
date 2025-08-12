@@ -86,15 +86,33 @@ class _ArkaSayfaPageState extends State<ArkaSayfaPage> {
         ),
       ],
       child: Scaffold(
-        floatingActionButton: FloatingActionButton(
-          backgroundColor: Theme.of(context).colorScheme.primary,
-          onPressed: () {
-            _openDatePicker(context);
-          },
-          child: Icon(
-            Icons.date_range_outlined,
-            color: Theme.of(context).colorScheme.onPrimary,
-          ),
+        floatingActionButton: Row(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [
+            FloatingActionButton(
+              heroTag: "btn2",
+              backgroundColor: Theme.of(context).colorScheme.primary,
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: Icon(
+                Icons.keyboard_return_outlined,
+                color: Theme.of(context).colorScheme.onPrimary,
+              ),
+            ),
+            SizedBox(width: 10.w),
+            FloatingActionButton(
+              heroTag: "btn1",
+              backgroundColor: Theme.of(context).colorScheme.primary,
+              onPressed: () {
+                _openDatePicker(context);
+              },
+              child: Icon(
+                Icons.date_range_outlined,
+                color: Theme.of(context).colorScheme.onPrimary,
+              ),
+            ),
+          ],
         ),
         body: ark == null
             ? Center(child: CircularProgressIndicator())
