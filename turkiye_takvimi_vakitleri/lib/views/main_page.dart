@@ -27,6 +27,7 @@ import 'package:turkiye_takvimi_vakitleri/models/id_model.dart';
 import 'package:turkiye_takvimi_vakitleri/models/time_model.dart';
 import 'package:turkiye_takvimi_vakitleri/views/aciklama.dart';
 import 'package:turkiye_takvimi_vakitleri/views/arka_sayfa_page.dart';
+import 'package:turkiye_takvimi_vakitleri/views/gunun_sozu.dart';
 import 'package:turkiye_takvimi_vakitleri/views/qibla.dart';
 import 'package:widget_zoom/widget_zoom.dart';
 
@@ -368,19 +369,13 @@ class _MainPageState extends State<MainPage> {
       },
       child: Row(
         mainAxisSize: MainAxisSize.max,
-
         children: [
-          Expanded(
-            flex: 1,
-            child: Icon(icon, color: Theme.of(context).colorScheme.primary),
-          ),
-          Expanded(
-            flex: 5,
-            child: Text(
-              text,
-              style: TextStyle(fontSize: 20.sp),
-              textAlign: TextAlign.center,
-            ),
+          Icon(icon, color: Theme.of(context).colorScheme.primary),
+          SizedBox(width: 10.w),
+          Text(
+            text,
+            style: TextStyle(fontSize: 20.sp),
+            textAlign: TextAlign.center,
           ),
         ],
       ),
@@ -424,77 +419,13 @@ class _MainPageState extends State<MainPage> {
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
                   drawerButtons(Icons.data_array_rounded, 'Günün sözü', () {
-                    showDialog(
-                      barrierColor: Theme.of(context).colorScheme.primary,
-
-                      context: context,
-                      builder: (context) {
-                        final parsed = parse(ark!.veri!.gununSozu);
-                        final parsed2 = parse(ark!.veri!.gununOlayi);
-                        return WidgetZoom(
-                          heroAnimationTag: 'se',
-                          zoomWidget: Dialog(
-                            child: Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Container(
-                                decoration: BoxDecoration(
-                                  color: themeColor.onPrimary,
-                                  borderRadius: BorderRadius.circular(22),
-                                ),
-                                child: Padding(
-                                  padding: EdgeInsets.all(20.w),
-                                  child: Column(
-                                    mainAxisSize: MainAxisSize.min,
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceEvenly,
-                                    children: [
-                                      Text(
-                                        parsed.body!.text,
-                                        textAlign: TextAlign.center,
-                                        style: TextStyle(
-                                          fontSize: 20.sp,
-                                          color: Theme.of(
-                                            context,
-                                          ).colorScheme.primary,
-                                        ),
-                                      ),
-                                      Image.asset(
-                                        width: 300.w,
-                                        'images/divider2.png',
-                                        color: Theme.of(
-                                          context,
-                                        ).colorScheme.error,
-                                      ),
-                                      Text(
-                                        parsed2.body!.text,
-                                        textAlign: TextAlign.center,
-                                        style: TextStyle(
-                                          fontSize: 20.sp,
-                                          color: Theme.of(
-                                            context,
-                                          ).colorScheme.primary,
-                                        ),
-                                      ),
-                                      IconButton(
-                                        onPressed: () {
-                                          Navigator.pop(context);
-                                        },
-                                        icon: Icon(
-                                          size: 30.sp,
-                                          Icons.keyboard_return_rounded,
-                                          color: Theme.of(
-                                            context,
-                                          ).colorScheme.primary,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ),
-                        );
-                      },
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) {
+                          return GununSozu(ark: ark!);
+                        },
+                      ),
                     );
                   }),
                   drawerButtons(Icons.padding_outlined, 'Arka yaprak', () {
@@ -686,11 +617,7 @@ class _MainPageState extends State<MainPage> {
                                           height: 44.h,
                                           borderRadius: 22.w,
                                           heading: Text(
-                                            'Rengi seçiniz',
-                                            style: TextStyle(fontSize: 25.sp),
-                                          ),
-                                          subheading: Text(
-                                            'Opaklık seçiniz',
+                                            'Renk seçiniz',
                                             style: TextStyle(fontSize: 25.sp),
                                           ),
                                         ),
@@ -795,7 +722,8 @@ class _MainPageState extends State<MainPage> {
           BlocListener<IdCubit, IdModel?>(
             listener: (BuildContext context, IdModel? state) async {
               if (state != null) {
-                final c = state.sehir![0];
+                final c = state.sehir![1];
+
                 setState(() {
                   _locationCityName = c.cityNameTR!;
                   id = int.parse(c.iD!);
@@ -1159,7 +1087,7 @@ class _MainPageState extends State<MainPage> {
           _getLocationAndId();
         },
         child: Container(
-          width: 160.w,
+          width: 214.w,
           height: 30.h,
           decoration: BoxDecoration(
             color: themeColor.primary,
