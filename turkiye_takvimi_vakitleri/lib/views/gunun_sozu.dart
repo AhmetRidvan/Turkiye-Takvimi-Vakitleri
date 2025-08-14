@@ -19,59 +19,57 @@ class _GununSozuState extends State<GununSozu> {
     final themeColor = Theme.of(context).colorScheme;
     final parsed = parse(widget.ark.veri!.gununSozu);
     final parsed2 = parse(widget.ark.veri!.gununOlayi);
+
     return Scaffold(
-      body: SafeArea(
-        child: WidgetZoom(
-          heroAnimationTag: 'se',
-          zoomWidget: Dialog(
-            child: Padding(
-              padding: EdgeInsets.all(10.0),
-              child: Container(
-                decoration: BoxDecoration(
-                  color: themeColor.onPrimary,
-                  borderRadius: BorderRadius.circular(22),
-                ),
-                child: SingleChildScrollView(
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      Text(
-                        parsed.body!.text,
-                        textAlign: TextAlign.center,
+      floatingActionButton: FloatingActionButton(
+        backgroundColor: Theme.of(context).colorScheme.primary,
+        onPressed: () {},
+        child: IconButton(
+          onPressed: () {
+            Navigator.pop(context);
+          },
+          icon: Icon(
+            size: 30.sp,
+            Icons.keyboard_return_rounded,
+            color: Theme.of(context).colorScheme.onPrimary,
+          ),
+        ),
+      ),
+      body: Padding(
+        padding: EdgeInsets.all(10.0),
+        child: Container(
+          decoration: BoxDecoration(borderRadius: BorderRadius.circular(22)),
+          child: SafeArea(
+            child: SingleChildScrollView(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  Text(
+                    parsed.body!.text,
+                    textAlign: TextAlign.center,
 
-                        style: TextStyle(
-                          fontSize: 35.sp,
-                          color: Theme.of(context).colorScheme.primary,
-                        ),
-                      ),
-                      Image.asset(
-                        width: 300.w,
-                        'images/divider2.png',
-                        color: Theme.of(context).colorScheme.error,
-                      ),
-
-                      Text(
-                        parsed2.body!.text,
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          fontSize: 35.sp,
-                          color: Theme.of(context).colorScheme.primary,
-                        ),
-                      ),
-                      IconButton(
-                        onPressed: () {
-                          Navigator.pop(context);
-                        },
-                        icon: Icon(
-                          size: 35.sp,
-                          Icons.keyboard_return_rounded,
-                          color: Theme.of(context).colorScheme.primary,
-                        ),
-                      ),
-                    ],
+                    style: TextStyle(
+                      fontSize: 35.sp,
+                      color: Theme.of(context).colorScheme.primary,
+                    ),
                   ),
-                ),
+                  SizedBox(height: 30.h),
+                  Image.asset(
+                    width: 300.w,
+                    'images/divider2.png',
+                    color: Theme.of(context).colorScheme.error,
+                  ),
+                  SizedBox(height: 30.h),
+                  Text(
+                    parsed2.body!.text,
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: 35.sp,
+                      color: Theme.of(context).colorScheme.primary,
+                    ),
+                  ),
+                ],
               ),
             ),
           ),
