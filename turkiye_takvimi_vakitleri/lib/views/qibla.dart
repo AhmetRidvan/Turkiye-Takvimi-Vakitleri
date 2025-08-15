@@ -51,13 +51,8 @@ class QiblaCompass extends StatelessWidget {
               child: Stack(
                 alignment: Alignment.center,
                 children: [
+                  Image.asset('images/a.png', width: 300.w),
                   Container(
-                    width: 250,
-                    height: 250,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      border: BoxBorder.all(color: Colors.black, width: 3.w),
-                    ),
                     child: Center(
                       child: Transform.rotate(
                         angle: -qibla * (pi / 180),

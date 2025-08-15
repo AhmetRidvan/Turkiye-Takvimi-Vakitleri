@@ -811,8 +811,7 @@ class _MainPageState extends State<MainPage> {
           BlocListener<IdCubit, IdModel?>(
             listener: (BuildContext context, IdModel? state) async {
               if (state != null) {
-                final c = state.sehir![1];
-
+                final c = state.sehir![0];
                 setState(() {
                   _locationCityName = c.cityNameTR!;
                   id = int.parse(c.iD!);
