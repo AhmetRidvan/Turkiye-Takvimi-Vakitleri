@@ -20,7 +20,6 @@
 	<string>Kıble yönünü doğru gösterebilmek ve doğru namaz vakitleri için konum bilginize ihtiyaç duyuyoruz.</string>
 	<key>NSLocationAlwaysUsageDescription</key>
 	<string>Kıble yönünü doğru gösterebilmek ve doğru namaz vakitleri için konum bilginize ihtiyaç duyuyoruz.</string>
-
 	<key>CFBundleName</key>
 	<string>turkiye_takvimi_vakitleri</string>
 	<key>CFBundlePackageType</key>
